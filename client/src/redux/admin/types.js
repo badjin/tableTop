@@ -1,0 +1,6 @@
+export const GET_USERS_SUCCESS = 'getusers_success'
+export const GET_USERS_FAILURE = 'getusers_failure'
+export const GET_SETTINGS_SUCCESS = 'getSettings_success'
+export const GET_SETTINGS_FAILURE = 'getSettings_failure'
+export const SET_SETTINGS_SUCCESS = 'setSettings_success'
+export const SET_SETTINGS_FAILURE = 'setSettings_failure'
