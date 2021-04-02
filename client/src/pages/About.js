@@ -4,6 +4,7 @@ import mongodbLogo from '../assests/mongodb.png'
 import reduxLogo from '../assests/redux.png'
 import tailwindcss from '../assests/tailwindcss.png'
 import unsplash from '../assests/unsplash.webp'
+import atlas from '../assests/atlas.png'
 
 const About = () => {  
   return (
@@ -93,7 +94,7 @@ const About = () => {
                     <img className='w-4 h-4' src={unsplash} alt="Express"/>
                     <span>Unsplash.com</span>
                   </div>
-                </a>
+                </a>                
               </div>
               <div className='w-1/2 text-right pr-4'>
                 <a href='https://github.com/badjin/MERN_Authentication' target='_blank' className='hover:text-indigo-500' rel='noopener noreferrer'>
@@ -104,7 +105,16 @@ const About = () => {
             </div>            
           </div>
 
-          <div className='w-full flex-1 mt-1 text-gray-500'>
+          <div className='w-full flex-1 -mt-2 text-gray-500 ml-14 mb-2'>
+            <a href='https://www.boardgameatlas.com/' target='_blank' className='hover:text-indigo-500' rel='noopener noreferrer'>
+              <div className='flex items-center space-x-2'>
+                <img className='w-4 h-4' src={atlas} alt="Express"/>
+                <span>Board Game Atlas</span>
+              </div>
+            </a>
+          </div>
+
+          <div className='w-full flex-1 mt-5 text-gray-500'>
             <div className='flex items-center justify-center uppercase border-b-2 py-2 px-10 mb-2'>
               <span>Database</span>
             </div>

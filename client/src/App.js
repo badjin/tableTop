@@ -31,6 +31,8 @@ import Footer from './components/Footer'
 
 import { getLoginInfo } from './helpers/auth'
 import SiteConfig from './pages/admin/SiteConfig'
+import Games from './pages/Games'
+import GameDetail from './components/boardGames/GameDetail'
 
 
 const App = () => {
@@ -119,6 +121,8 @@ const App = () => {
               <AdminRoute exact path="/admin/settings" component={SiteConfig} />
               <AdminRoute exact path="/admin/users/:id" component={EditUserInfo} />
 
+              <Route exact path='/games/:id' render={props => <GameDetail {...props} />} />
+              <Route exact path='/games' render={props => <Games {...props} />} />
               <Route exact path='/about' render={props => <About {...props} />} />
               <Route exact path='/contact' render={props => <Contact {...props} />} />
               <Route exact path='/' render={props => <Home {...props} /> } />

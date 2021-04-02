@@ -28,18 +28,18 @@ const AdminMenu = ({user, onLogout}) => {
           <div className='absolute right-0 mt-2 w-48 py-2 bg-white rounded-lg shadow-xl'>
             <Link
               to='/admin/users'
-              className="block px-4 py-2 text-gray-800 hover:bg-indigo-500 hover:text-white"
+              className="block px-4 py-2 text-gray-800 hover:bg-primary hover:text-white"
               onClick={() => {setIsOpen(false)}}
             >
               User Management
             </Link>
-            <Link
+            {/* <Link
               to='/admin/settings'
-              className="block px-4 py-2 text-gray-800 hover:bg-indigo-500 hover:text-white"
+              className="block px-4 py-2 text-gray-800 hover:bg-primary hover:text-white"
               onClick={() => {setIsOpen(false)}}
             >
               Settings
-            </Link>
+            </Link> */}
           </div>
         </>
       )}      

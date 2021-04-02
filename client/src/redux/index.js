@@ -20,3 +20,9 @@ export {
   updateUser,
   clearUsersData
 } from './admin/actions'
+
+export {
+  getGames,
+  getMyList,
+  getGameDetail
+} from './boardGames/actions'

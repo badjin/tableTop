@@ -8,10 +8,10 @@ module.exports = {
         'full-mobile': 'calc(100vh - 192px)'
       },
       colors: {
-        primary: '#FF6363',
+        primary: '#7B9EC9',
         secondary: {
-          100: '#E2E2D5',
-          200: '#888883',
+          100: '#EAC324',
+          200: '#9CA3AF',
         }
       },
       fontFamily: {

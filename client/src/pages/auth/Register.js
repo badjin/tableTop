@@ -10,7 +10,6 @@ import SidePanel from '../../components/SidePanel'
 
 const Register = () => { 
   const dispatch = useDispatch()
-
   const { register, handleSubmit, watch, errors } = useForm()
   const password = useRef()
   password.current = watch("password")
@@ -85,12 +84,12 @@ const Register = () => {
               <InputValidate filedName='confirm password' type={errors.ConfirmPpassword.type} />}
 
               <button
-                  type='submit'
-                  className='btn btn-submit mt-5'
-                >
-                  <i className='fas fa-user-plus fa 1x w-6  -ml-2' />
-                  <span className='ml-3'>Sign Up</span>
-                </button>
+                type='submit'
+                className='btn btn-submit mt-5'
+              >
+                <i className='fas fa-user-plus fa 1x w-6  -ml-2' />
+                <span className='ml-3'>Sign Up</span>
+              </button>
               
               <div className='my-2 border-b text-center'>
                 <div className='leading-none px-2 inline-block text-sm text-gray-600 tracking-wide font-medium bg-white transform translate-y-1/2'>
