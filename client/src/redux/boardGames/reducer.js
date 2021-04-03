@@ -4,7 +4,8 @@ import {
   GET_MYLIST_SUCCESS,
   GET_MYLIST_FAILURE,
   GET_BGAME_DETAIL_SUCCESS,
-  GET_BGAME_DETAIL_FAILURE
+  GET_BGAME_DETAIL_FAILURE,
+  SET_GAME
 } from './types'
 
 const initialState = {
@@ -55,7 +56,13 @@ const boardGamesReducer = (state=initialState, action) => {
         return { 
           ...state, 
           game: ''
-        }    
+        }
+
+      case SET_GAME:
+        return {
+          ...state,
+          game: action.payload
+        }
 
       default:
         return state;

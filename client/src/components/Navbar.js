@@ -1,12 +1,14 @@
 import React, { useState, useEffect } from "react"
 import { NavLink, Link, useHistory } from "react-router-dom"
 import logo from "../assests/logo.png"
+import mobileLogo from "../assests/mobileLogo.png"
 import hamburger from "../assests/hamburger.png"
 import { toast } from "react-toastify"
 import { useSelector, useDispatch } from 'react-redux'
 import { logoutUser } from '../redux'
 import { AccountDropdown } from './AccountDropdown'
 import AdminMenu from './AdminMenu'
+import SearchGame from './boardGames/SearchGame'
 
 const Navbar = () => {
   const user = useSelector(state => state.user)
@@ -14,6 +16,7 @@ const Navbar = () => {
   const [isMobile, setIsMobile] = useState(false)
 
   const history = useHistory()
+
   const logout = () => {
     dispatch(logoutUser())
     .then(() => {
@@ -41,37 +44,37 @@ const Navbar = () => {
     <nav className="sm:h-16 bg-gray-200 font-body">
       <div className="max-w-6xl mx-auto px-4">
         <div className="flex justify-between">
-          <div className="flex space-x-4">
+          <div className="flex space-x-2">
             {/* logo */}
             <div>
               <NavLink
                 to="/" exact
                 className="flex items-center py-5 px-2 transform hover:scale-125 transition-all duration-300 ease-in-out"
               >
-                <img className="h-6 w-19 mr-1" src={logo} alt="FlowerLogo" />
-                {/* <span className="font-bold">BoardGameLab</span> */}
+                <img className="h-6 w-19 mr-1 hidden sm:block" src={logo} alt="BoardGameLab" />
+                <img className="h-6 w-19 mr-1 sm:hidden" src={mobileLogo} alt="BoardGameLab" />
               </NavLink>
             </div>
 
             {/* primary nav */}
-            <div className="hidden md:flex items-center space-x-1">
+            <div className="hidden sm:flex items-center space-x-1">
               <NavLink
                 to="/games"
-                className="py-5 px-3 text-gray-500 hover:bg-gray-500 hover:text-gray-100 uppercase text-sm"
+                className="py-5 px-2 text-gray-500 hover:bg-gray-500 hover:text-gray-100 uppercase text-sm"
                 activeClassName="active-navbar"
               >
                 Games
               </NavLink>
               <NavLink
                 to="/about"
-                className="py-5 px-3 text-gray-500 hover:bg-gray-500 hover:text-gray-100 uppercase text-sm"
+                className="py-5 px-2 text-gray-500 hover:bg-gray-500 hover:text-gray-100 uppercase text-sm"
                 activeClassName="active-navbar"
               >
                 About
               </NavLink>
               <NavLink
                 to="/contact"
-                className="py-5 px-3 text-gray-500 hover:bg-gray-500 hover:text-gray-100 uppercase text-sm"
+                className="py-5 px-2 text-gray-500 hover:bg-gray-500 hover:text-gray-100 uppercase text-sm"
                 activeClassName="active-navbar"
               >
                 Contact
@@ -82,9 +85,12 @@ const Navbar = () => {
             </div>
           </div>
 
+          <div className='mt-1'>
+            <SearchGame />
+          </div>
           {/* secondary nav */}
 
-          <div className="hidden md:flex items-center space-x-2">
+          <div className="hidden md:flex items-center space-x-1">
             {user.isLogin 
             ? ( <AccountDropdown user={user.userData} onLogout={logout} /> ) 
             : (

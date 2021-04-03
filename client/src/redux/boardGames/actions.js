@@ -5,14 +5,15 @@ import {
   GET_MYLIST_SUCCESS,
   GET_MYLIST_FAILURE,
   GET_BGAME_DETAIL_SUCCESS,
-  GET_BGAME_DETAIL_FAILURE
+  GET_BGAME_DETAIL_FAILURE,
+  SET_GAME
 } from './types'
 
 
 export const getGames = (parameter, keyword) => {
   return (dispatch) => {
     return new Promise((resolve, reject) => {
-      axios(`https://api.boardgameatlas.com/api/search?${parameter}=${keyword}&limit=60&client_id=${process.env.REACT_APP_BG_ATLAS_ID}`)
+      axios(`https://api.boardgameatlas.com/api/search?${parameter}=${keyword}&limit=96&client_id=${process.env.REACT_APP_BG_ATLAS_ID}`)
       .then( res => {
         dispatch({
           type:GET_BGAMES_SUCCESS,
@@ -33,7 +34,7 @@ export const getGames = (parameter, keyword) => {
 export const getGameDetail = (keyword) => {
   return (dispatch) => {
     return new Promise((resolve, reject) => {
-      axios(`https://api.boardgameatlas.com/api/search?ids=${keyword}&limit=60&client_id=${process.env.REACT_APP_BG_ATLAS_ID}`)
+      axios(`https://api.boardgameatlas.com/api/search?ids=${keyword}&client_id=${process.env.REACT_APP_BG_ATLAS_ID}`)
       .then( res => {
         dispatch({
           type:GET_BGAME_DETAIL_SUCCESS,
@@ -49,6 +50,18 @@ export const getGameDetail = (keyword) => {
       })
     })      
   }
+}
+
+export const setGame = (game) => {
+  return (dispatch) => {
+    return new Promise((resolve) => {
+      dispatch({
+        type: SET_GAME,
+        payload:game
+      })
+      resolve(true)
+    })
+  }  
 }
 
 export const getMyList = (token) => {

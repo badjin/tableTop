@@ -1,9 +1,12 @@
 import React from 'react'
 import { useHistory } from 'react-router-dom'
+import { useDispatch } from 'react-redux'
+import { setGame } from '../../redux'
 import ReactStars from "react-rating-stars-component"
 
 const GameCard = ({game}) => {
   const history = useHistory()
+  const dispatch = useDispatch()
 
   const userRating = {
     size: 14,
@@ -13,7 +16,10 @@ const GameCard = ({game}) => {
   }
 
   const moveToGameDetail = () => {
-    history.push(`/games/${game.id}`)
+    dispatch(setGame(game))
+    .then(res => {
+      if(res) history.push(`/games/${game.id}`)
+    })
   }
 
   return (
