@@ -10,10 +10,10 @@ const AdminMenu = ({user, onLogout}) => {
   }, [])
 
   return (
-    <div className='relative z-10'>
+    <div className='relative z-20'>
       <div className='flex items-center space-x-3'>
         <button           
-          className='relative z-10 py-5 px-3 font-bold text-gray-700 hover:bg-gray-500 hover:text-yellow-200 focus:outline-none uppercase'          
+          className='py-5 px-3 font-bold text-gray-700 hover:bg-gray-500 hover:text-yellow-200 focus:outline-none uppercase'          
           onClick={() => {setIsOpen(!isOpen)}}>
           Admin 
         </button>        

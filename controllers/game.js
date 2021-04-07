@@ -24,3 +24,13 @@ exports.addGame = async (req, res, next) => {
     games: games.gameList
   })
 }
+
+exports.deleteGame = async (req, res, next) => {
+  await Game.updateOne({_id:req.body.id}, {$pull: { gameList: {gameId: req.body.gameId}} })
+
+  const games = await Game.findById(req.body.id)
+  res.status(200).json({
+    success: true,
+    games: games.gameList
+  })
+}

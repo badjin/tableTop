@@ -33,15 +33,15 @@ const GameDetail = ({match}) => {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [location.pathname])
 
-  const deleteGame = ((game) => {
+  const deleteGame = (() => {
     const {id, token} = getLoginInfo()
-
-    // dispatch(removeGame(token, {id, game}))
-    // .then((res) => {
-    //   toast.success('This game has been removed from the list')
-    //   setLoading(false)
-    // })
-    // .catch((error) => toast.error(error))
+    dispatch(removeGame(token, {id, gameId}))
+    .then((res) => {
+      toast.success('This game has been removed from the list')
+      setLoading(false)
+      history.push('/games/mylist')
+    })
+    .catch((error) => toast.error(error))
 
   })
 
@@ -109,20 +109,25 @@ const GameDetail = ({match}) => {
                   <span>{game.year_published}</span>
                 </div>
               </div>
-              <div className='my-3 mb-4 flex items-center justify-between text-xs px-1'>                
-                <a href={`${game.rules_url}`} target='_blank' className='btn-text uppercase' rel='noopener noreferrer'>
-                  See Rules
-                </a>
-                <a href={`${game.url}`} target='_blank' className='btn-text uppercase' rel='noopener noreferrer'>
-                  See More
-                </a>          
+              <div className='my-3 mb-4 flex items-center justify-between text-xs px-1'>  
+                { game.rules_url && (
+                  <a href={`${game.rules_url}`} target='_blank' className='btn-text uppercase' rel='noopener noreferrer'>
+                    See Rules
+                  </a>
+                ) }    
+                
+                { game.url && (
+                  <a href={`${game.url}`} target='_blank' className='btn-text uppercase' rel='noopener noreferrer'>
+                    See More
+                  </a>     
+                )}
               </div>
               {isOwned ? (
                 <button className='btn-round absolute left-0 top-0 mt-1 ml-1 text-primary border-white hover:bg-primary focus:outline-none' onClick={() => (
                   getLoginInfo() ? setIsModal(true) : history.push('/login')
                 )}>
                   <i className='fas fa-trash-alt w-6' />
-                  Remove
+                  Delete
                 </button>
                 ) : (
                 <button className='absolute left-0 top-0 mt-1 ml-1 my-2 btn-round text-primary border-white hover:bg-primary focus:outline-none' onClick={() => (
@@ -139,10 +144,10 @@ const GameDetail = ({match}) => {
             </div>            
           </div>
           { isModal && 
-            <CustomModal title={`${isOwned ? 'Remove' : 'Add'} this game`} btn='Add' 
+            <CustomModal title={`${isOwned ? 'Delete' : 'Add'} this game`} btn={`${isOwned ? 'Delete' : 'Add'}`}
               message={`This game will be ${isOwned ? 'removed from' : 'added to'} your game list.`}           
               confirmClick={() => {
-                isOwned ? deleteGame(game) : addGame(game)
+                isOwned ? deleteGame() : addGame(game)
                 setIsModal(false)
               }} 
               cancelClick={() => setIsModal(false)}

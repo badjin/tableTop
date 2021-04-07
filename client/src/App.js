@@ -29,11 +29,11 @@ import Contact from './pages/Contact'
 import NavBar from './components/Navbar'
 import Footer from './components/Footer'
 
-import { getLoginInfo } from './helpers/auth'
 import SiteConfig from './pages/admin/SiteConfig'
 import Games from './pages/Games'
 import GameDetail from './components/boardGames/GameDetail'
-import Mylist from './pages/games/MyList'
+
+import { getLoginInfo } from './helpers/auth'
 
 
 const App = () => {

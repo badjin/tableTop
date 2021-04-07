@@ -114,14 +114,14 @@ const About = () => {
             </a>
           </div>
 
-          <div className='w-full flex-1 mt-5 text-gray-500'>
+          {/* <div className='w-full flex-1 mt-5 text-gray-500'>
             <div className='flex items-center justify-center uppercase border-b-2 py-2 px-10 mb-2'>
               <span>Database</span>
             </div>
             <div className='text-center px-2'>
               <span>You can select firebase DB and MongoDB using the <b>config.env</b> file.</span>
             </div>
-          </div>
+          </div> */}
 
         </div>
       </div>

@@ -15,11 +15,12 @@ import {
   SET_MYLIST
 } from './types'
 
+import { getLoginInfo } from '../../helpers/auth'
 
-export const getGames = (parameter, keyword) => {
+export const getGames = () => {
   return (dispatch) => {
     return new Promise((resolve, reject) => {
-      axios(`https://api.boardgameatlas.com/api/search?${parameter}=${keyword}&limit=96&client_id=${process.env.REACT_APP_BG_ATLAS_ID}`)
+      axios(`https://api.boardgameatlas.com/api/search?order_by=popularity&limit=96&client_id=${process.env.REACT_APP_BG_ATLAS_ID}`)
       .then( res => {
         dispatch({
           type:GET_BGAMES_SUCCESS,
@@ -82,7 +83,8 @@ export const setMyList = (games) => {
   }  
 }
 
-export const getMyList = ({id, token}) => {
+export const getMyList = () => {
+  const { id, token } = getLoginInfo()
   return (dispatch) => {
     return new Promise((resolve, reject) => {
       axios.get(`${process.env.REACT_APP_API_URL}/games/${id}`, {
@@ -106,6 +108,10 @@ export const getMyList = ({id, token}) => {
     })      
   }
 }
+
+// export const getGames = (isPopular) => {
+//   isPopular ? getGamesFromApi() : getMyList()
+// }
 
 export const addGame2MyList = (token, {id, game}) => {
   return (dispatch) => {
@@ -132,10 +138,10 @@ export const addGame2MyList = (token, {id, game}) => {
   }
 }
 
-export const removeGame = (token, {id, game}) => {
+export const removeGame = (token, {id, gameId}) => {
   return (dispatch) => {
     return new Promise((resolve, reject) => {
-      axios.post(`${process.env.REACT_APP_API_URL}/games/remove`, {id, game}, {
+      axios.post(`${process.env.REACT_APP_API_URL}/games/delete`, {id, gameId}, {
         headers: {
             Authorization: `Bearer ${token}`
         }
