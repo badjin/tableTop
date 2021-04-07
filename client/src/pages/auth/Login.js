@@ -19,7 +19,7 @@ const Login = () =>  {
   const setAuth = (res) => {
     authenticate(res, () => {
       toast.success(`Hey ${res.user.name}, Welcome back!`)
-      history.push('/')
+      res.user.gameList.length ? history.push('/games/mylist') : history.push('/')
       // if(res.success && res.user.role === 'admin') history.push('/admin/users')
       // else history.push('/')
     })

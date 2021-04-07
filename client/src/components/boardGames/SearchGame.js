@@ -1,12 +1,11 @@
 import React, { useState, useEffect } from 'react'
-import { useLocation, useHistory } from 'react-router-dom'
+import { useHistory } from 'react-router-dom'
 import { useDispatch } from 'react-redux'
 import { setGame } from '../../redux'
 import axios from 'axios'
 
 const SearchGame = () => {
   const history = useHistory()
-  const location = useLocation()
   const dispatch = useDispatch()
   const [keyword, setKeyword] = useState('')
   const [games, setGames] = useState([])

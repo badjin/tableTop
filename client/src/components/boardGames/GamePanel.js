@@ -1,30 +1,38 @@
 import React, { useState, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { BeatLoader } from 'react-spinners'
+import { toast } from 'react-toastify'
 import { getGames } from '../../redux'
 import GameCard from './GameCard'
 
-const GamePanel = ({ history }) => {
+const GamePanel = () => {
   const dispatch = useDispatch()
   const boardGames = useSelector(state => state.boardGames.games)
   const [games, setGames] = useState(boardGames)
-  const [loading, setLoading] = useState(false)  
+  const [loading, setLoading] = useState(true)  
   
   useEffect(() => {
-    if(boardGames.length) return
+    if(boardGames.length){
+      setLoading(false)
+      return
+    }
     dispatch(getGames('order_by', 'popularity'))
     .then((res) => {
       // console.log(res)
       setGames(res)
-      setLoading(true)
+      setLoading(false)
+    })
+    .catch((error) => {
+      setLoading(false)
+      toast.error(error)
     })
     // eslint-disable-next-line react-hooks/exhaustive-deps
   },[])
 
-  if(!games.length) {
+  if(loading) {
     return (
       <div className='flex items-center justify-center'>
-        <BeatLoader color='green' loading={!loading} />
+        <BeatLoader color='green' loading={loading} />
       </div>
     )
   }

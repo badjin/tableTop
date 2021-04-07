@@ -27,21 +27,35 @@ export const AccountDropdown = ({user, onLogout}) => {
           tabIndex='-1'
           onClick={() => {setIsOpen(false)}}></button>
           
-          <div className='absolute right-0 mt-2 w-48 py-2 bg-white rounded-lg shadow-xl'>
+          <div className='absolute right-0 mt-2 w-48 py-2 bg-white rounded-lg shadow-xl text-center'>
             <Link
               to='/profile'
-              className="block px-4 py-2 text-gray-800 hover:bg-primary hover:text-white"
+              className="block px-4 py-2 text-gray-800 hover:bg-primary hover:text-white border-b-2"
               onClick={() => {setIsOpen(false)}}
             >
               Profile
             </Link>
-            {/* <Link
-              to='/admin'
+            <Link
+              to='/games/mylist'
               className="block px-4 py-2 text-gray-800 hover:bg-primary hover:text-white"
               onClick={() => {setIsOpen(false)}}
             >
-              User Management
-            </Link> */}
+              My List
+            </Link>
+            <Link
+              to='#'
+              className="block px-4 py-2 text-gray-800 hover:bg-primary hover:text-white"
+              onClick={() => {setIsOpen(false)}}
+            >
+              Play Log
+            </Link>
+            <Link
+              to='#'
+              className="block px-4 py-2 text-gray-800 hover:bg-primary hover:text-white border-b-2"
+              onClick={() => {setIsOpen(false)}}
+            >
+              Random Pick
+            </Link>
             <Link
               to='/'
               className="block px-4 py-2 text-gray-800 hover:bg-primary hover:text-white"

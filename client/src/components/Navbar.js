@@ -201,6 +201,29 @@ const Navbar = () => {
                     <img className="w-8 h-8 rounded-full object-cover border-2 border-gray-600" src={`${process.env.REACT_APP_PROFILE_URL}/${user.userData.avatar}`} alt="Profile"/>
                     <span className='text-gray-600 text-sm'>{user.userData.name}</span>
                   </div>
+                  <div className='flex flex-col items-center justify-start'>
+                    <NavLink
+                      to="#"
+                      className="py-1 px-3 text-gray-500 hover:bg-gray-500 hover:text-gray-100 rounded-full uppercase text-sm"
+                      activeClassName="active-navbar" onClick={closeMobileMenu}
+                    >
+                      My List
+                    </NavLink>
+                    <NavLink
+                      to="#"
+                      className="py-1 px-3 text-gray-500 hover:bg-gray-500 hover:text-gray-100 rounded-full uppercase text-sm"
+                      activeClassName="active-navbar" onClick={closeMobileMenu}
+                    >
+                      Play Log
+                    </NavLink>
+                    <NavLink
+                      to="#"
+                      className="py-1 px-3 text-gray-500 hover:bg-gray-500 hover:text-gray-100 rounded-full uppercase text-sm"
+                      activeClassName="active-navbar" onClick={closeMobileMenu}
+                    >
+                      Random Pick
+                    </NavLink>
+                  </div>
                   <div className='flex items-center space-x-2'>
                     <Link
                       to='/profile'

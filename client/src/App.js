@@ -33,6 +33,7 @@ import { getLoginInfo } from './helpers/auth'
 import SiteConfig from './pages/admin/SiteConfig'
 import Games from './pages/Games'
 import GameDetail from './components/boardGames/GameDetail'
+import Mylist from './pages/games/MyList'
 
 
 const App = () => {
@@ -117,6 +118,7 @@ const App = () => {
               <GuestOnlyRoute exact path='/users/password/reset/:token' component={ResetPassword} />
               
               <PrivateRoute exact path="/profile" component={Profile} />
+              <PrivateRoute exact path="/games/mylist" component={Games} />
               <AdminRoute exact path="/admin/users" component={Admin} />
               <AdminRoute exact path="/admin/settings" component={SiteConfig} />
               <AdminRoute exact path="/admin/users/:id" component={EditUserInfo} />

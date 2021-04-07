@@ -25,5 +25,9 @@ export {
   getGames,
   getMyList,
   getGameDetail,
-  setGame
+  setGame,
+  addGame2MyList,
+  removeGame,
+  resetMyList,
+  setMyList
 } from './boardGames/actions'

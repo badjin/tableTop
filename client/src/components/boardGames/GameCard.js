@@ -16,9 +16,10 @@ const GameCard = ({game}) => {
   }
 
   const moveToGameDetail = () => {
+    const id = game.id ? game.id : game.gameId
     dispatch(setGame(game))
     .then(res => {
-      if(res) history.push(`/games/${game.id}`)
+      if(res) history.push(`/games/${id}`)
     })
   }
 

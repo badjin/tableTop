@@ -12,6 +12,7 @@ import {
 
 import { signout, getLoginInfo } from '../../helpers/auth'
 import { clearUsersData } from '../admin/actions'
+import { setMyList, resetMyList } from '../boardGames/actions'
 
 
 export const registerUser = (dataToSubmit) => {
@@ -75,6 +76,7 @@ export const loginUser = (dataToSubmit, endPoint) => {
       return new Promise((resolve, reject) => {
         axios.post(`${process.env.REACT_APP_API_URL}/${endPoint}`,dataToSubmit)
         .then( res => {
+          dispatch(setMyList(res.data.user.gameList)) 
           dispatch({
             type: LOGIN_SUCCESS,
             payload: res.data
@@ -96,8 +98,9 @@ export const logoutUser = () => {
         signout()
         dispatch(logoutSuccess())
         dispatch(clearUsersData())
+        dispatch(resetMyList())
         resolve(true)
-      } 
+      }
     })
   }
 }
@@ -130,28 +133,3 @@ export const updateProfile = (user, token) => {
     })      
   }
 }
-// export const getUser = ({id, token}) => { 
-//   return (dispatch) => {
-//     return new Promise((resolve, reject) => {
-
-//       axios.get(`${process.env.REACT_APP_API_URL}/user/${id}`, {
-//         headers: {
-//           Authorization: `Bearer ${token}`
-//         }
-//       })
-//       .then(res => {
-//         dispatch(updateUserData(res.data))
-//         resolve(res.data)
-//       })
-//       .catch(error => {
-//         if(error.response === undefined){
-//           console.log(error.config.url)
-//         } else {
-//           reject(error.response.data.error)
-//         }
-//       })
-//     })
-//   }  
-// }
-
-

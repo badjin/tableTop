@@ -13,7 +13,8 @@ exports.successLogin = (res, user) => {
       name: user.name, 
       role: user.role,
       avatar: user.avatar,
-      googleAccount: user.googleAccount
+      googleAccount: user.googleAccount,
+      gameList: user.gameList
     },
     token
   })

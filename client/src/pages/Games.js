@@ -1,9 +1,12 @@
 import React, { useState, useEffect } from 'react'
 import { getLoginInfo } from '../helpers/auth'
+import { useHistory, useLocation } from 'react-router-dom'
 import Popular from './games/Popular'
 import MyList from './games/MyList'
 
-const Games = ({ history }) => {
+const Games = () => {
+  const history = useHistory()
+  const location = useLocation()
   const [isPopular, setIsPopular] = useState(true)
   
   const checkLogin = () => {
@@ -13,9 +16,9 @@ const Games = ({ history }) => {
   }
 
   useEffect(() => {
-    
+    if(location.pathname === '/games/mylist') setIsPopular(false)
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  },[])
+  },[location])
 
   return (
     <div className='max-w-screen-xl m-0 lg:m-10 bg-white shadow lg:rounded-lg'>
@@ -35,7 +38,7 @@ const Games = ({ history }) => {
         >
           My List
         </button>
-      </div>
+      </div>      
       { isPopular ? (
           <Popular />
         ) : (

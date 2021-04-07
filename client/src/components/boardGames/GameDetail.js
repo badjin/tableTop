@@ -1,35 +1,62 @@
 import React, { useState, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { useLocation } from 'react-router-dom'
+import { useLocation, useHistory } from 'react-router-dom'
 import { BeatLoader } from 'react-spinners'
 import ReactStars from "react-rating-stars-component"
+import { toast } from 'react-toastify'
 
-import { getGameDetail } from '../../redux'
+import { getGameDetail, addGame2MyList, removeGame } from '../../redux'
+import { getLoginInfo } from '../../helpers/auth'
+import { CustomModal } from '../Modal'
 
 const GameDetail = ({match}) => {
   const location = useLocation()
+  const history = useHistory()
   const dispatch = useDispatch()
-  const currentGame = useSelector(state => state.boardGames.game)
+  const myList = useSelector(state => state.boardGames.myList)
   const [ game, setGame ] = useState('')
   const [ gameId, setGameId ] = useState('')
-  const [loading, setLoading] = useState(false)
+  const [loading, setLoading] = useState(true)
+  const [isModal, setIsModal] = useState(false)
+  const [isOwned, setIsOwned] = useState(false)
 
   useEffect(() => {
-    if(currentGame){
-      setGame(currentGame)
-      setGameId(match.params.id)
-      setLoading(true)
-      return
-    }
+    
+    if(myList.length && myList.find((value) => (value.gameId === match.params.id))) setIsOwned(true)
 
     dispatch(getGameDetail(match.params.id))
     .then((res) => {
       setGame(res)
       setGameId(match.params.id)
-      setLoading(true)
+      setLoading(false)
     })
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [location.pathname])
+
+  const deleteGame = ((game) => {
+    const {id, token} = getLoginInfo()
+
+    // dispatch(removeGame(token, {id, game}))
+    // .then((res) => {
+    //   toast.success('This game has been removed from the list')
+    //   setLoading(false)
+    // })
+    // .catch((error) => toast.error(error))
+
+  })
+
+  const addGame = ((game) => {
+    const {id, token} = getLoginInfo()
+
+    dispatch(addGame2MyList(token, {id, game}))
+    .then((res) => {
+      toast.success('This game has been added to the list')
+      setLoading(false)
+      history.push('/games/mylist')
+    })
+    .catch((error) => toast.error(error))
+
+  })
 
   const userRating = {
     size: 14,
@@ -41,7 +68,7 @@ const GameDetail = ({match}) => {
   if(!gameId) {
     return (
       <div className='flex items-center justify-center'>
-        <BeatLoader color='green' loading={!loading} />
+        <BeatLoader color='green' loading={loading} />
       </div>
     )
   }
@@ -50,7 +77,7 @@ const GameDetail = ({match}) => {
     <div className='max-w-screen-xl m-0 lg:m-10 bg-white shadow lg:rounded-lg'>
       { game && 
         <>
-          <div className='flex flex-col sm:flex-row items-start p-10'>
+          <div className='flex flex-col sm:flex-row items-start p-10 relative'>
             <div className='sm:w-1/2 overflow-hidden'>
               <img className='w-full  object-cover bg-cover bg-center bg-no-repeat rounded' src={game.image_url} alt="Welcome"/>
               <div className='flex items-center justify-between mt-2'>
@@ -82,22 +109,46 @@ const GameDetail = ({match}) => {
                   <span>{game.year_published}</span>
                 </div>
               </div>
-              <div className='my-3 mb-4 flex items-center justify-center space-x-8'>
-                <a href={`${game.rules_url}`} target='_blank' className='btn-round text-green-300 border-green-300 hover:bg-green-300' rel='noopener noreferrer'>
+              <div className='my-3 mb-4 flex items-center justify-between text-xs px-1'>                
+                <a href={`${game.rules_url}`} target='_blank' className='btn-text uppercase' rel='noopener noreferrer'>
                   See Rules
                 </a>
-                <a href={`${game.url}`} target='_blank' className='btn-round text-indigo-300 border-indigo-300 hover:bg-indigo-300' rel='noopener noreferrer'>
+                <a href={`${game.url}`} target='_blank' className='btn-text uppercase' rel='noopener noreferrer'>
                   See More
-                </a>
-                <button className='btn-round text-yellow-300 border-yellow-300 hover:bg-yellow-300 focus:outline-none'>Add List</button>
+                </a>          
               </div>
-            </div>     
+              {isOwned ? (
+                <button className='btn-round absolute left-0 top-0 mt-1 ml-1 text-primary border-white hover:bg-primary focus:outline-none' onClick={() => (
+                  getLoginInfo() ? setIsModal(true) : history.push('/login')
+                )}>
+                  <i className='fas fa-trash-alt w-6' />
+                  Remove
+                </button>
+                ) : (
+                <button className='absolute left-0 top-0 mt-1 ml-1 my-2 btn-round text-primary border-white hover:bg-primary focus:outline-none' onClick={() => (
+                  getLoginInfo() ? setIsModal(true) : history.push('/login')
+                )}>
+                  <i className='fas fa-plus w-6' />
+                  Add
+                </button>
+                )}          
+            </div>
             <div className='sm:w-1/2 text-sm sm:px-5 sm:mt-0 mt-5'>
               <h2 className='text-4xl text-gray-500 mb-1'>{game.name}</h2>
               <p>{game.description_preview}</p>      
-            </div>
-          </div>          
-        </>
+            </div>            
+          </div>
+          { isModal && 
+            <CustomModal title={`${isOwned ? 'Remove' : 'Add'} this game`} btn='Add' 
+              message={`This game will be ${isOwned ? 'removed from' : 'added to'} your game list.`}           
+              confirmClick={() => {
+                isOwned ? deleteGame(game) : addGame(game)
+                setIsModal(false)
+              }} 
+              cancelClick={() => setIsModal(false)}
+            /> 
+          }
+        </>        
       }
     </div>
   )

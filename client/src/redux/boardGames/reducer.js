@@ -5,7 +5,13 @@ import {
   GET_MYLIST_FAILURE,
   GET_BGAME_DETAIL_SUCCESS,
   GET_BGAME_DETAIL_FAILURE,
-  SET_GAME
+  SET_GAME,
+  ADD_GAME_SUCCESS,
+  ADD_GAME_FAILURE,
+  REMOVE_GAME_SUCCESS,
+  REMOVE_GAME_FAILURE,
+  RESET_MYLIST,
+  SET_MYLIST
 } from './types'
 
 const initialState = {
@@ -39,11 +45,12 @@ const boardGamesReducer = (state=initialState, action) => {
           loading: false
         }
 
+      case RESET_MYLIST:
       case GET_MYLIST_FAILURE:
         return { 
           ...state, 
           myList: []
-        }    
+        }
 
       case GET_BGAME_DETAIL_SUCCESS:      
         return { 
@@ -62,6 +69,20 @@ const boardGamesReducer = (state=initialState, action) => {
         return {
           ...state,
           game: action.payload
+        }
+
+      case SET_MYLIST:
+      case ADD_GAME_SUCCESS:
+      case REMOVE_GAME_SUCCESS:
+        return {
+          ...state,
+          myList: action.payload
+        }
+
+      case ADD_GAME_FAILURE:
+      case REMOVE_GAME_FAILURE:
+        return {
+          state
         }
 
       default:

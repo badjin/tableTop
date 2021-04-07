@@ -1,5 +1,23 @@
 const mongoose = require('mongoose')
 
+const PlayLogSchema = new mongoose.Schema({
+  comment: String,
+  gameId: String,
+  playDate: Date,
+  players: Number,
+  playTime: Number  
+})
+
+const GameSchema = new mongoose.Schema({
+  gameId: String,
+  name: String,
+  rank: Number,
+  year_published: Number,
+  average_user_rating: Number,
+  images: Object,
+  playLog: [PlayLogSchema]
+})
+
 const UserSchema = new mongoose.Schema({
   name: {
     type: String,
@@ -36,7 +54,8 @@ const UserSchema = new mongoose.Schema({
   googleAccount:{
     type: Boolean,
     default: false
-  }
+  },
+  gameList: [GameSchema]
 }, {timestamps: true})
 
 UserSchema.method('toJSON', function () {

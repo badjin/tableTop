@@ -6,7 +6,13 @@ import {
   GET_MYLIST_FAILURE,
   GET_BGAME_DETAIL_SUCCESS,
   GET_BGAME_DETAIL_FAILURE,
-  SET_GAME
+  SET_GAME,
+  ADD_GAME_SUCCESS,
+  ADD_GAME_FAILURE,
+  REMOVE_GAME_SUCCESS,
+  REMOVE_GAME_FAILURE,
+  RESET_MYLIST,
+  SET_MYLIST
 } from './types'
 
 
@@ -64,10 +70,22 @@ export const setGame = (game) => {
   }  
 }
 
-export const getMyList = (token) => {
+export const setMyList = (games) => {
+  return (dispatch) => {
+    return new Promise((resolve) => {
+      dispatch({
+        type: SET_MYLIST,
+        payload:games
+      })
+      resolve(true)
+    })
+  }  
+}
+
+export const getMyList = ({id, token}) => {
   return (dispatch) => {
     return new Promise((resolve, reject) => {
-      axios.get(`${process.env.REACT_APP_API_URL}/games`, {
+      axios.get(`${process.env.REACT_APP_API_URL}/games/${id}`, {
         headers: {
             Authorization: `Bearer ${token}`
         }
@@ -75,9 +93,9 @@ export const getMyList = (token) => {
       .then( res => {
         dispatch({
           type: GET_MYLIST_SUCCESS,
-          payload: res.data
-        })
-        resolve(res.data)
+          payload: res.data.games
+        })        
+        resolve(res.data.games)
       })
       .catch(error => {
         dispatch({
@@ -87,4 +105,62 @@ export const getMyList = (token) => {
       })
     })      
   }
+}
+
+export const addGame2MyList = (token, {id, game}) => {
+  return (dispatch) => {
+    return new Promise((resolve, reject) => {
+      axios.post(`${process.env.REACT_APP_API_URL}/games/add`, {id, game}, {
+        headers: {
+            Authorization: `Bearer ${token}`
+        }
+      })
+      .then( res => {
+        dispatch({
+          type: ADD_GAME_SUCCESS,
+          payload: res.data.games
+        })        
+        resolve(res.data.games)
+      })
+      .catch(error => {
+        dispatch({
+          type: ADD_GAME_FAILURE
+        })
+        reject(error)
+      })
+    })      
+  }
+}
+
+export const removeGame = (token, {id, game}) => {
+  return (dispatch) => {
+    return new Promise((resolve, reject) => {
+      axios.post(`${process.env.REACT_APP_API_URL}/games/remove`, {id, game}, {
+        headers: {
+            Authorization: `Bearer ${token}`
+        }
+      })
+      .then( res => {
+        dispatch({
+          type: REMOVE_GAME_SUCCESS,
+          payload: res.data.games
+        })        
+        resolve(res.data.games)
+      })
+      .catch(error => {
+        dispatch({
+          type: REMOVE_GAME_FAILURE
+        })
+        reject(error)
+      })
+    })      
+  }
+}
+
+export const resetMyList = () => {
+  return (dispatch) => {
+    dispatch({
+      type: RESET_MYLIST
+    })
+  }  
 }
