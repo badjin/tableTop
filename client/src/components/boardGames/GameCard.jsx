@@ -35,6 +35,7 @@ const GameCard = ({game}) => {
       <div className='absolute left-0 top-0 -mt-2 -ml-2 rounded-full border-gray-800 bg-yellow-500 text-gray-800 px-2 py-1'>
         {game.rank}
       </div>
+      
     </div>
   )
 }

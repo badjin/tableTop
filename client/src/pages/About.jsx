@@ -9,7 +9,7 @@ import atlas from '../assests/atlas.png'
 const About = () => {  
   return (
     <div className='bj-container'>      
-      <div className='lg:w-1/2 xl:w-5/12 p-3 md:w-2/3 w-full'>
+      <div className='lg:w-1/2 p-3 md:w-2/3 w-full'>
         <div className='my-4 flex flex-col items-center px-8'>
           <h1 className='text-2xl xl:text-3xl font-extrabold'>
             About

@@ -55,9 +55,9 @@ const Games = () => {
   },[location])
 
   return (    
-    <div className='max-w-screen-xl m-0 lg:m-10 bg-white shadow lg:rounded-lg'>
+    <div className='max-w-screen-xl m-0 lg:m-10 bg-white shadow lg:rounded-lg w-screen'>
       { !loading && (
-        <>
+        <div className='flex flex-col px-10'>
           <div className='flex items-center justify-center p-5 space-x-5'>
             <button 
               disabled={isPopular}
@@ -75,15 +75,17 @@ const Games = () => {
               My List
             </button>
           </div>
-          <div className='flex items-start justify-center px-10 py-4'>
-            <div className='px-10'>        
+
+          <div className='flex items-start justify-center px-5'>
+            
               {
                 games.length ? (
                   <div className='sm:w-full sm:grid sm:grid-cols-3 lg:grid-cols-6 sm:gap-4'>
                     {games.map((game, index) => (
-                      <div key={index} className=''>
-                        <GameCard game={game} />
-                      </div>
+                      <GameCard key={index} game={game} />
+                      // <div key={index} className=''>
+                      //   <GameCard game={game} />
+                      // </div>
                     ))}
                   </div>
                 ) : (
@@ -92,9 +94,9 @@ const Games = () => {
                   </div>
                 )
               }
-            </div>
+           
           </div>    
-        </>
+        </div>
       )}
     </div>
   )

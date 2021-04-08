@@ -40,7 +40,7 @@ const Login = () =>  {
 
   return (
     <div className='bj-container'>
-      <div className='lg:w-1/2 xl:w-5/12 p-3 sm:p-6'>
+      <div className='lg:w-1/2 p-3 sm:p-6'>
         <div className='my-4 flex flex-col items-center'>
           <h1 className='text-2xl xl:text-3xl font-extrabold'>
             Sign In
