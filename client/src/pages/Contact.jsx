@@ -25,7 +25,7 @@ const Contact = ({ history }) => {
 
   return ( 
     <div className='bj-container'>
-      <div className='flex-1 bg-indigo-100 text-center hidden lg:flex'>
+      <div className='bg-indigo-100 text-center hidden lg:flex lg:w-1/2'>
         <SidePanel />   
       </div>
       <div className='lg:w-1/2 p-3 sm:p-6'>
@@ -72,12 +72,12 @@ const Contact = ({ history }) => {
               <InputValidate filedName='message' type={errors.message.type} />}
 
               <button
-                  type='submit'
-                  className='btn btn-submit mt-5'
-                >
-                  <i className='fas fa-envelope fa 1x w-6  -ml-2' />
-                  <span className='ml-3'>Send Message</span>
-                </button>             
+                type='submit'
+                className='btn btn-submit mt-5'
+              >
+                <i className='fas fa-envelope fa 1x w-6  -ml-2' />
+                <span className='ml-3'>Send Message</span>
+              </button>             
               
             </form>
           </div>

@@ -11,7 +11,14 @@ import {
   REMOVE_GAME_SUCCESS,
   REMOVE_GAME_FAILURE,
   RESET_MYLIST,
-  SET_MYLIST
+  SET_MYLIST,
+  GET_PLAYLOG_SUCCESS,
+  GET_PLAYLOG_FAILURE,
+  ADD_PLAYLOG_SUCCESS,
+  ADD_PLAYLOG_FAILURE,
+  REMOVE_PLAYLOG_SUCCESS,
+  REMOVE_PLAYLOG_FAILURE,
+  SET_PLAYLOG
 } from './types'
 
 const initialState = {
@@ -19,6 +26,8 @@ const initialState = {
   game: '',
   myList: [],
   myGame: '',
+  playLogs: [],
+  playLog: '',
   errorMessage: '',
   loading: false
 }
@@ -36,13 +45,6 @@ const boardGamesReducer = (state=initialState, action) => {
         return { 
           ...state, 
           games: []
-        }
-
-      case GET_MYLIST_SUCCESS:      
-        return { 
-          ...state, 
-          myList: action.payload,
-          loading: false
         }
 
       case RESET_MYLIST:
@@ -81,6 +83,34 @@ const boardGamesReducer = (state=initialState, action) => {
 
       case ADD_GAME_FAILURE:
       case REMOVE_GAME_FAILURE:
+        return {
+          state
+        }
+
+      case SET_PLAYLOG:
+      case GET_PLAYLOG_SUCCESS:      
+        return { 
+          ...state, 
+          playLogs: action.payload
+        }
+      
+      case GET_PLAYLOG_FAILURE:
+        return { 
+          ...state, 
+          playLogs: []
+        }
+
+      case GET_MYLIST_SUCCESS:
+      case ADD_PLAYLOG_SUCCESS:
+      case REMOVE_PLAYLOG_SUCCESS:
+        return {
+          ...state,
+          playLogs: action.payload.logs,
+          myList: action.payload.gameList
+        }
+
+      case ADD_PLAYLOG_FAILURE:
+      case REMOVE_PLAYLOG_FAILURE:
         return {
           state
         }

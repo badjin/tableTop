@@ -4,38 +4,68 @@ import { useLocation, useHistory } from 'react-router-dom'
 import { BeatLoader } from 'react-spinners'
 import ReactStars from "react-rating-stars-component"
 import { toast } from 'react-toastify'
+import TruncateMarkup from 'react-truncate-markup'
 
-import { getGameDetail, addGame2MyList, removeGame } from '../../redux'
+import { getGameDetail, addGame2MyList, removeGame, getPlayLogs, getMyList } from '../../redux'
 import { getLoginInfo } from '../../helpers/auth'
 import { CustomModal } from '../Modal'
+import PlayLogForm from './PlayLogForm'
+import PlayLogTable from './PlayLogTable'
 
 const GameDetail = ({match}) => {
   const location = useLocation()
   const history = useHistory()
   const dispatch = useDispatch()
-  const myList = useSelector(state => state.boardGames.myList)
+  const [myList, setMyList] = useState(useSelector(state => state.boardGames.myList))
+  const [playLogs, setPlayLogs] = useState(useSelector(state => state.boardGames.playLogs))
   const [ game, setGame ] = useState('')
   const [ gameId, setGameId ] = useState('')
   const [loading, setLoading] = useState(true)
   const [isModal, setIsModal] = useState(false)
   const [isOwned, setIsOwned] = useState(false)
+  const [isTruncated, setIsTruncated] = useState(false)
+  const [isLogForm, setIsLogForm] = useState(false)
+  const [thisLogs, setThisLogs] = useState([])
+  const [currentLog, setCurrentLog] = useState({
+    gameId: '',
+    comment: '',
+    playData: new Date(),
+    players: '',
+    playTime: 0,
+    winner: ''
+  })
+  const [isEdit, setIsEdit] = useState(false)
+  const [isShow, setIsShow] = useState(false)
 
   useEffect(() => {
-    
-    if(myList.length && myList.find((value) => (value.gameId === match.params.id))) setIsOwned(true)
+    // refresh 후에 데이터 날라감
+    if(!myList.length) {
+      dispatch(getMyList())
+      .then(res => {
+        setMyList(res)
+        setIsOwned(res.find((value) => (value.gameId === match.params.id)))
+      })
+    } else setIsOwned(myList.length && myList.find((value) => (value.gameId === match.params.id)))
+
+    if(!playLogs.length) {
+      dispatch(getPlayLogs())
+      .then(res => setPlayLogs(res))
+    }
 
     dispatch(getGameDetail(match.params.id))
     .then((res) => {
+      setThisLogs(playLogs.filter((v) => v.gameId === res.id))
+      
       setGame(res)
       setGameId(match.params.id)
       setLoading(false)
-    })
+    })    
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [location.pathname])
 
   const deleteGame = (() => {
-    const {id, token} = getLoginInfo()
-    dispatch(removeGame(token, {id, gameId}))
+
+    dispatch(removeGame(gameId))
     .then((res) => {
       toast.success('This game has been removed from the list')
       setLoading(false)
@@ -46,9 +76,8 @@ const GameDetail = ({match}) => {
   })
 
   const addGame = ((game) => {
-    const {id, token} = getLoginInfo()
 
-    dispatch(addGame2MyList(token, {id, game}))
+    dispatch(addGame2MyList(game))
     .then((res) => {
       toast.success('This game has been added to the list')
       setLoading(false)
@@ -74,12 +103,47 @@ const GameDetail = ({match}) => {
   }
 
   return (
-    <div className='max-w-screen-xl m-0 lg:m-10 bg-white shadow lg:rounded-lg'>
+    <div className='max-w-screen-xl m-0 md:m-10 lg:mx-20 xl:mx-32 bg-white shadow lg:rounded-lg md:h-2/3'>
       { game && 
-        <>
-          <div className='flex flex-col sm:flex-row items-start p-10 relative'>
-            <div className='sm:w-1/2 overflow-hidden'>
-              <img className='w-full  object-cover bg-cover bg-center bg-no-repeat rounded' src={game.image_url} alt="Welcome"/>
+        <div className='flex flex-col p-3'>
+          <div className='flex items-center justify-between'>
+            <div>
+              { isOwned 
+                ? (
+                  <button 
+                    className='btn-round text-primary border-white hover:bg-primary focus:outline-none' 
+                    onClick={() => (getLoginInfo() ? setIsModal(true) : history.push('/login'))}
+                  >
+                    <i className='fas fa-trash-alt w-6' />
+                    Delete
+                  </button>
+                ) 
+                : (
+                  <button 
+                    className='btn-round text-primary border-white hover:bg-primary focus:outline-none' 
+                    onClick={() => (getLoginInfo() ? setIsModal(true) : history.push('/login'))}
+                  >
+                    <i className='fas fa-plus w-6' />
+                    Add
+                  </button>
+                )
+              }
+            </div>
+            <div className='flex items-center'>              
+              <button 
+                className='btn-round text-primary border-white hover:bg-primary focus:outline-none'
+                onClick={() => ( isOwned ? history.push('/games/mylist') : history.push('/games'))}
+              >
+                <i className='fas fa-undo-alt w-6' />
+                List
+              </button>
+            </div>
+          </div>
+          <div className='flex flex-col sm:flex-row items-center sm:items-start p-10 sm:space-x-4'>
+            <div className='sm:w-1/2  overflow-hidden'>
+              <div className='flex justify-center'>
+                <img className='h-64 bg-cover bg-center bg-no-repeat rounded' src={game.image_url} alt="Title"/>
+              </div>
               <div className='flex items-center justify-between mt-2'>
                 <div className='flex items-center justify-start space-x-2'>
                   <ReactStars {...userRating} />
@@ -91,58 +155,132 @@ const GameDetail = ({match}) => {
                   <span className='text-sm rounded-full border-gray-800 bg-yellow-500 text-gray-800 px-2 py-1 ml-1'>{game.rank}</span>
                 </div>
               </div>
-              <div className='flex items-center justify-between mt-2'>
-                <div>
-                  <i className='fas fa-users w-6 text-primary' />
-                  <span>{game.min_players} - {game.max_players}</span>
+              <div className='mt-2'>
+                <div className="flex items-center justify-between">
+                  <div>
+                    <i className='fas fa-users w-6 text-primary' />
+                    <span>{game.min_players} - {game.max_players}</span>
+                  </div>
+                  <div>
+                    <i className='fas fa-clock w-6 text-primary' />
+                    <span>{game.min_playtime} - {game.max_playtime}</span>
+                  </div>
                 </div>
-                <div>
-                  <i className='fas fa-clock w-6 text-primary' />
-                  <span>{game.min_playtime} - {game.max_playtime}</span>
-                </div>
-                <div>
-                  <i className='fas fa-user w-6 text-primary' />
-                  <span>{game.min_age}+</span>
-                </div>
-                <div>
-                  <i className='fas fa-calendar-alt w-6 text-primary' />
-                  <span>{game.year_published}</span>
+                <div className="flex items-center justify-between">
+                  <div className='ml-1'>
+                    <i className='fas fa-user w-6 text-primary' />
+                    <span>{game.min_age}+</span>
+                  </div>
+                  <div>
+                    <i className='fas fa-calendar-alt w-6 text-primary' />
+                    <span>{game.year_published}</span>
+                  </div>
                 </div>
               </div>
-              <div className='my-3 mb-4 flex items-center justify-between text-xs px-1'>  
+              <div className='my-3 flex items-center justify-between text-sm px-2'>  
                 { game.rules_url && (
-                  <a href={`${game.rules_url}`} target='_blank' className='btn-text uppercase' rel='noopener noreferrer'>
+                  <a href={`${game.rules_url}`} target='_blank' className='btn-text ' rel='noopener noreferrer'>
                     See Rules
                   </a>
                 ) }    
                 
                 { game.url && (
-                  <a href={`${game.url}`} target='_blank' className='btn-text uppercase' rel='noopener noreferrer'>
-                    See More
+                  <a href={`${game.url}`} target='_blank' className='btn-text ' rel='noopener noreferrer'>
+                    More information
                   </a>     
                 )}
               </div>
-              {isOwned ? (
-                <button className='btn-round absolute left-0 top-0 mt-1 ml-1 text-primary border-white hover:bg-primary focus:outline-none' onClick={() => (
-                  getLoginInfo() ? setIsModal(true) : history.push('/login')
-                )}>
-                  <i className='fas fa-trash-alt w-6' />
-                  Delete
-                </button>
-                ) : (
-                <button className='absolute left-0 top-0 mt-1 ml-1 my-2 btn-round text-primary border-white hover:bg-primary focus:outline-none' onClick={() => (
-                  getLoginInfo() ? setIsModal(true) : history.push('/login')
-                )}>
-                  <i className='fas fa-plus w-6' />
-                  Add
-                </button>
-                )}          
             </div>
-            <div className='sm:w-1/2 text-sm sm:px-5 sm:mt-0 mt-5'>
-              <h2 className='text-4xl text-gray-500 mb-1'>{game.name}</h2>
-              <p>{game.description_preview}</p>      
-            </div>            
+            <div className='relative sm:w-1/2 text-sm sm:px-5 sm:mt-0 mt-5'>
+              { isLogForm && (
+                <div className="absolute inset-0 -mt-8 text-base">
+                  <PlayLogForm 
+                    gameId={gameId} 
+                    log={currentLog} 
+                    isEdit={isEdit}
+                    isShow={isShow}
+                    submitClick={(logs) => {
+                      setThisLogs(logs)
+                      setIsLogForm(false)
+                    }} 
+                    cancelClick={() => setIsLogForm(false)} 
+                  />
+                </div>
+              )}
+              <h2 className='text-2xl text-gray-500 mb-1'>{game.name}</h2>
+              { !isTruncated 
+                ? (
+                  <TruncateMarkup lines={16} ellipsis={                    
+                    <div className={`text-right text-sm mt-3 ${ isLogForm && 'hidden' }`}>
+                      <button className='btn-text' onClick={() => setIsTruncated(true)}>Show more</button>
+                    </div>
+                  }>
+                    <div>
+                      {game.description_preview}
+                    </div>
+                  </TruncateMarkup>
+                ) 
+                : (
+                  <div>
+                    {game.description_preview}
+                  </div>
+                )
+              }
+              
+              { isTruncated && (
+                <div className='text-right text-sm mt-3'>
+                  <button className='btn-text' onClick={() => setIsTruncated(false)}>Hide content</button>
+                </div>
+              )}
+                
+            </div>
           </div>
+          { isOwned && (
+            <>
+              <div className="flex items-center justify-end mt-3 sm:-mt-3">
+                <button 
+                  className='btn-round text-primary border-white hover:bg-primary focus:outline-none'
+                  onClick={() => {
+                    setCurrentLog({
+                      gameId: '',
+                      comment: '',
+                      playDate: new Date(),
+                      players: '',
+                      playTime: 0,
+                      winner: ''
+                    })
+                    setIsTruncated(false)
+                    setIsLogForm(true)
+                    setIsEdit(false)
+                    setIsShow(false)
+                  }}
+                >
+                  <i className='fas fa-edit w-6' />
+                  Play log
+                </button>
+              </div>
+              { thisLogs.length > 0 && (
+                <PlayLogTable 
+                  logs={thisLogs} 
+                  onEditBtn={(log) => {
+                    if(isLogForm) return
+                    setCurrentLog(log)
+                    setIsLogForm(true)
+                    setIsShow(false)
+                    setIsEdit(true)
+                  }}
+                  onShowBtn={(log) => {
+                    if(isLogForm) return
+                    setCurrentLog(log)
+                    setIsLogForm(true)
+                    setIsShow(true)
+                    setIsEdit(true)
+                  }} 
+                />
+              )}
+            </>
+          )}
+
           { isModal && 
             <CustomModal title={`${isOwned ? 'Delete' : 'Add'} this game`} btn={`${isOwned ? 'Delete' : 'Add'}`}
               message={`This game will be ${isOwned ? 'removed from' : 'added to'} your game list.`}           
@@ -152,8 +290,8 @@ const GameDetail = ({match}) => {
               }} 
               cancelClick={() => setIsModal(false)}
             /> 
-          }
-        </>        
+          }          
+        </div>
       }
     </div>
   )

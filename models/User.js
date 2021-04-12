@@ -1,21 +1,27 @@
 const mongoose = require('mongoose')
+const imageRoot = 'https://s3.amazonaws.xom/mybucket/'
 
 const PlayLogSchema = new mongoose.Schema({
   comment: String,
   gameId: String,
   playDate: Date,
-  players: Number,
-  playTime: Number  
+  players: String,
+  playTime: { type: Number, min: 10, max: 360 },
+  winner: String
+  // playImages: [{type: String, get: v => `${imageRoot}${v}`}]
 })
 
 const GameSchema = new mongoose.Schema({
   gameId: String,
   name: String,
   rank: Number,
+  logCount: {
+    type: Number,
+    default: 0
+  },
   year_published: Number,
   average_user_rating: Number,
-  images: Object,
-  playLog: [PlayLogSchema]
+  images: Object
 })
 
 const UserSchema = new mongoose.Schema({
@@ -55,7 +61,8 @@ const UserSchema = new mongoose.Schema({
     type: Boolean,
     default: false
   },
-  gameList: [GameSchema]
+  gameList: [GameSchema],
+  playLog: [PlayLogSchema]
 }, {timestamps: true})
 
 UserSchema.method('toJSON', function () {

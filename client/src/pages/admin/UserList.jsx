@@ -13,6 +13,7 @@ const TableRow = ({ user, index, pageNumber, onEditBtnClick, onDeleteBtnClick })
     'staff': 'bg-green-600',
     'customer': 'bg-purple-600'
   }
+  
   return (
     <tr className={`border-b border-gray-200 hover:bg-gray-100 ${(index%2 && 'bg-gray-50')}`}>
       <td className="hidden lg:block py-3 md:px-6 px-3 text-left whitespace-nowrap">
@@ -92,7 +93,7 @@ const Admin = ({ history }) => {
   return (
     <div className='bj-container'>
       <div className="lg:w-full p-3 md:p-6">
-        <div className="flex items-center justify-center bg-white font-sans overflow-hidden">
+        <div className="flex items-center justify-center bg-white overflow-hidden">
           <div className="w-full ">
             <div className="bg-white shadow-md rounded my-4">
               <table className="min-w-max w-full table-auto">

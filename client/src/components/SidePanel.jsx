@@ -26,8 +26,8 @@ const SidePanel = () => {
     <>
       {backgroundImage && 
         <div className='w-full bg-cover bg-center bg-no-repeat' style={{ backgroundImage: `url(${backgroundImage})` }} >
-          <div className='flex flex-col justify-end h-full absoluteinset-0 bg-indigo-900 bg-opacity-30'>
-            <h1 className='p-12 text-left text-xl text-gray-100 tracking-wide'>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Quia quam laboriosam dolorum et quasi accusamus? Eius aliquam soluta illum quasi laborum suscipit consectetur id reiciendis! Veniam alias necessitatibus accusantium distinctio.</h1>            
+          <div className='flex flex-col justify-end h-full bg-indigo-900 bg-opacity-30'>
+            <h1 className='p-12 text-left text-xl text-gray-100'>Make your own game diary and keep your memories with your friends or family.</h1>
           </div>
         </div>
       }

@@ -26,11 +26,13 @@ module.exports = {
         "screen/5": "calc(100vh / 5)",
         "screen/10": "calc(100vh / 10)",
         "screen90": "90vh",
-      }),
+      }),      
     },
   },
   variants: {
-    extend: {},
+    extend: {}
   },
-  plugins: [],
+  plugins: [
+    
+  ],
 }

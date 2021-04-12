@@ -29,5 +29,9 @@ export {
   addGame2MyList,
   removeGame,
   resetMyList,
-  setMyList
+  setMyList,
+  getPlayLogs,
+  addPlayLog,
+  removeLog,
+  setPlayLogs
 } from './boardGames/actions'

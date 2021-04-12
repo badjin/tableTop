@@ -12,7 +12,7 @@ import {
 
 import { signout, getLoginInfo } from '../../helpers/auth'
 import { clearUsersData } from '../admin/actions'
-import { setMyList, resetMyList } from '../boardGames/actions'
+import { setMyList, resetMyList, setPlayLogs } from '../boardGames/actions'
 
 
 export const registerUser = (dataToSubmit) => {
@@ -76,7 +76,8 @@ export const loginUser = (dataToSubmit, endPoint) => {
       return new Promise((resolve, reject) => {
         axios.post(`${process.env.REACT_APP_API_URL}/${endPoint}`,dataToSubmit)
         .then( res => {
-          dispatch(setMyList(res.data.user.gameList)) 
+          dispatch(setMyList(res.data.user.gameList))
+          dispatch(setPlayLogs(res.data.user.playLog))
           dispatch({
             type: LOGIN_SUCCESS,
             payload: res.data
@@ -105,7 +106,15 @@ export const logoutUser = () => {
   }
 }
 
-export const updateLoginUser = (user) => {  
+export const updateLoginUser = (user) => { 
+  // return (dispatch) => {
+  //   dispatch(setMyList(user.gameList))
+  //   dispatch(setPlayLogs(user.playLog))
+  //   dispatch({
+  //     type: GETDATA_SUCCESS,
+  //     payload: user
+  //   })
+  // }
   return {
     type: GETDATA_SUCCESS,
     payload: user

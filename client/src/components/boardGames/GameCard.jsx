@@ -4,7 +4,7 @@ import { useDispatch } from 'react-redux'
 import { setGame } from '../../redux'
 import ReactStars from "react-rating-stars-component"
 
-const GameCard = ({game}) => {
+const GameCard = ({game, isPopular}) => {
   const history = useHistory()
   const dispatch = useDispatch()
 
@@ -32,9 +32,17 @@ const GameCard = ({game}) => {
         <ReactStars {...userRating} />
         <span className='text-gray-400'><i>{game.year_published}</i></span>
       </div>
-      <div className='absolute left-0 top-0 -mt-2 -ml-2 rounded-full border-gray-800 bg-yellow-500 text-gray-800 px-2 py-1'>
-        {game.rank}
-      </div>
+      { isPopular ? (
+          <div className='absolute left-0 top-0 -mt-2 -ml-2 rounded-full border-gray-800 bg-yellow-500 text-gray-800 px-2 py-1'>
+            {game.rank}
+          </div>
+        ) : (
+          <div className={`${!game.logCount && 'hidden'} absolute right-0 top-0 -mt-2 -mr-2 rounded-full border-gray-800 bg-indigo-500 text-gray-100 px-2 py-1`}>
+            {game.logCount}
+          </div>
+          
+        )
+      }
       
     </div>
   )

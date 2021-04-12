@@ -12,7 +12,14 @@ import {
   REMOVE_GAME_SUCCESS,
   REMOVE_GAME_FAILURE,
   RESET_MYLIST,
-  SET_MYLIST
+  SET_MYLIST,
+  GET_PLAYLOG_SUCCESS,
+  GET_PLAYLOG_FAILURE,
+  ADD_PLAYLOG_SUCCESS,
+  ADD_PLAYLOG_FAILURE,
+  REMOVE_PLAYLOG_SUCCESS,
+  REMOVE_PLAYLOG_FAILURE,
+  SET_PLAYLOG
 } from './types'
 
 import { getLoginInfo } from '../../helpers/auth'
@@ -20,13 +27,14 @@ import { getLoginInfo } from '../../helpers/auth'
 export const getGames = () => {
   return (dispatch) => {
     return new Promise((resolve, reject) => {
-      axios(`https://api.boardgameatlas.com/api/search?order_by=popularity&limit=96&client_id=${process.env.REACT_APP_BG_ATLAS_ID}`)
+      // axios(`https://api.boardgameatlas.com/api/search?gt_reddit_day_count=30&limit=96&client_id=${process.env.REACT_APP_BG_ATLAS_ID}`)
+      axios(`https://api.boardgameatlas.com/api/search?limit=96&client_id=${process.env.REACT_APP_BG_ATLAS_ID}`)
       .then( res => {
         dispatch({
           type:GET_BGAMES_SUCCESS,
           payload:res.data.games
         })
-        resolve(res.data.games)
+        resolve(res.data.gameList)
       })
       .catch(error => {
         dispatch({
@@ -95,9 +103,9 @@ export const getMyList = () => {
       .then( res => {
         dispatch({
           type: GET_MYLIST_SUCCESS,
-          payload: res.data.games
+          payload: res.data
         })        
-        resolve(res.data.games)
+        resolve(res.data.gameList)
       })
       .catch(error => {
         dispatch({
@@ -109,11 +117,8 @@ export const getMyList = () => {
   }
 }
 
-// export const getGames = (isPopular) => {
-//   isPopular ? getGamesFromApi() : getMyList()
-// }
-
-export const addGame2MyList = (token, {id, game}) => {
+export const addGame2MyList = (game) => {
+  const { id, token } = getLoginInfo()
   return (dispatch) => {
     return new Promise((resolve, reject) => {
       axios.post(`${process.env.REACT_APP_API_URL}/games/add`, {id, game}, {
@@ -124,9 +129,9 @@ export const addGame2MyList = (token, {id, game}) => {
       .then( res => {
         dispatch({
           type: ADD_GAME_SUCCESS,
-          payload: res.data.games
+          payload: res.data.gameList
         })        
-        resolve(res.data.games)
+        resolve(res.data.gameList)
       })
       .catch(error => {
         dispatch({
@@ -138,7 +143,8 @@ export const addGame2MyList = (token, {id, game}) => {
   }
 }
 
-export const removeGame = (token, {id, gameId}) => {
+export const removeGame = (gameId) => {
+  const { id, token } = getLoginInfo()
   return (dispatch) => {
     return new Promise((resolve, reject) => {
       axios.post(`${process.env.REACT_APP_API_URL}/games/delete`, {id, gameId}, {
@@ -149,9 +155,9 @@ export const removeGame = (token, {id, gameId}) => {
       .then( res => {
         dispatch({
           type: REMOVE_GAME_SUCCESS,
-          payload: res.data.games
+          payload: res.data.gamelist
         })        
-        resolve(res.data.games)
+        resolve(res.data.gameList)
       })
       .catch(error => {
         dispatch({
@@ -169,4 +175,94 @@ export const resetMyList = () => {
       type: RESET_MYLIST
     })
   }  
+}
+
+export const setPlayLogs = (playLogs) => {
+  return (dispatch) => {
+    return new Promise((resolve) => {
+      dispatch({
+        type: SET_PLAYLOG,
+        payload:playLogs
+      })
+      resolve(true)
+    })
+  }  
+}
+
+export const getPlayLogs = () => {
+  const { id, token } = getLoginInfo()
+  return (dispatch) => {
+    return new Promise((resolve, reject) => {
+      axios.get(`${process.env.REACT_APP_API_URL}/games/logs/${id}`, {
+        headers: {
+            Authorization: `Bearer ${token}`
+        }
+      })
+      .then( res => {
+        dispatch({
+          type: GET_PLAYLOG_SUCCESS,
+          payload: res.data.logs
+        })        
+        resolve(res.data.logs)
+      })
+      .catch(error => {
+        dispatch({
+          type: GET_PLAYLOG_FAILURE
+        })
+        reject(error)
+      })
+    })      
+  }
+}
+
+export const addPlayLog = (log, isEdit) => {
+  const { id, token } = getLoginInfo()
+  return (dispatch) => {
+    return new Promise((resolve, reject) => {
+      axios.post(`${process.env.REACT_APP_API_URL}/games/logs/${isEdit ? 'update' : 'add'}`, {id, log}, {
+        headers: {
+            Authorization: `Bearer ${token}`
+        }
+      })
+      .then( res => {
+        dispatch({
+          type: ADD_PLAYLOG_SUCCESS,
+          payload: res.data
+        })        
+        resolve(res.data.logs)
+      })
+      .catch(error => {
+        dispatch({
+          type: ADD_PLAYLOG_FAILURE
+        })
+        reject(error)
+      })
+    })      
+  }
+}
+
+export const removeLog = ({logId, gameId}) => {
+  const { id, token } = getLoginInfo()
+  return (dispatch) => {
+    return new Promise((resolve, reject) => {
+      axios.post(`${process.env.REACT_APP_API_URL}/games/logs/delete`, {id, logId, gameId}, {
+        headers: {
+            Authorization: `Bearer ${token}`
+        }
+      })
+      .then( res => {
+        dispatch({
+          type: REMOVE_PLAYLOG_SUCCESS,
+          payload: res.data
+        })        
+        resolve(res.data.logs)
+      })
+      .catch(error => {
+        dispatch({
+          type: REMOVE_PLAYLOG_FAILURE
+        })
+        reject(error)
+      })
+    })      
+  }
 }

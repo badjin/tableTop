@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { Route, Switch, Redirect, useLocation } from 'react-router-dom'
+import { Route, Switch, Redirect, useLocation, useHistory } from 'react-router-dom'
 import { useDispatch } from 'react-redux'
 import { ToastContainer, toast } from 'react-toastify'
 import axios from 'axios'
@@ -39,6 +39,7 @@ import { getLoginInfo } from './helpers/auth'
 const App = () => {
   const dispatch = useDispatch()
   const location = useLocation()
+  const history = useHistory()
   const [loading, setLoading] = useState(true)
   const [loginCheck, setLoginCheck] = useState(false)
 
@@ -69,7 +70,10 @@ const App = () => {
       return false
     } catch (error) {
       dispatch(logoutUser())
-      .then(() => toast.error(error.response.data.error))
+      .then(() => {
+        history.push('/')
+        toast.error(error.response.data.error)
+      })
       return false
     }
   }  
