@@ -6,11 +6,12 @@ import ReactStars from "react-rating-stars-component"
 import { toast } from 'react-toastify'
 import TruncateMarkup from 'react-truncate-markup'
 
-import { getGameDetail, addGame2MyList, removeGame, getPlayLogs, getMyList } from '../../redux'
+import { getGameDetail, addGame2MyList, removeGame, getPlayLogs, getMyList, addPlayLog } from '../../redux'
 import { getLoginInfo } from '../../helpers/auth'
 import { CustomModal } from '../Modal'
 import PlayLogForm from './PlayLogForm'
 import PlayLogTable from './PlayLogTable'
+import axios from 'axios'
 
 const GameDetail = ({match}) => {
   const location = useLocation()
@@ -18,6 +19,8 @@ const GameDetail = ({match}) => {
   const dispatch = useDispatch()
   const [myList, setMyList] = useState(useSelector(state => state.boardGames.myList))
   const [playLogs, setPlayLogs] = useState(useSelector(state => state.boardGames.playLogs))
+  const user = useSelector(state => state.user.userData)
+
   const [ game, setGame ] = useState('')
   const [ gameId, setGameId ] = useState('')
   const [loading, setLoading] = useState(true)
@@ -65,6 +68,11 @@ const GameDetail = ({match}) => {
 
   const deleteGame = (() => {
 
+    if(user.role === 'guest') {
+      toast.error('You are logged in as a guest. Please sign up first.')
+      return
+    }
+
     dispatch(removeGame(gameId))
     .then((res) => {
       toast.success('This game has been removed from the list')
@@ -77,6 +85,11 @@ const GameDetail = ({match}) => {
 
   const addGame = ((game) => {
 
+    if(user.role === 'guest') {
+      toast.error('You are logged in as a guest. Please sign up first.')
+      return
+    }
+
     dispatch(addGame2MyList(game))
     .then((res) => {
       toast.success('This game has been added to the list')
@@ -86,6 +99,59 @@ const GameDetail = ({match}) => {
     .catch((error) => toast.error(error))
 
   })
+
+  const getRandomData = () => {
+    const gameId = myList[Math.floor(Math.random() * myList.length)].gameId
+    const startDate = new Date(2019, 0, 1)
+    const endDate = new Date()
+    const playDate = new Date(startDate.getTime() + Math.random() * (endDate.getTime() - startDate.getTime()))
+    const playersArray = ['All family', 'Oli, Ash, Lani & Jin', 'Friends', 'Neighbors', 'Colleagues']
+    const players = playersArray[Math.floor(Math.random() * playersArray.length)]
+    const randomNum1 = Math.floor(Math.random() * 290) + 1
+    const playTime = Math.floor(randomNum1 * 10 / 100) * 10 + 30
+    const comment = 'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Laboriosam vel asperiores amet atque sint tenetur blanditiis quibusdam officiis. Velit tempora ut vero voluptatum aperiam nemo dolores neque iste beatae nesciunt.'
+    const winnerArray = ['Oli', 'Ash', 'Lani', 'Jin']
+    const winner = winnerArray[Math.floor(Math.random() * winnerArray.length)]
+    return { gameId, playDate, players, playTime, comment, winner }
+  }
+
+  const dummyPlayLog = () => {
+    const payload = []
+
+    for(let i = 0; i < 100; i++){
+      payload.push(getRandomData())
+    }
+    payload.sort((a,b) => {
+      var c = new Date(a.playDate)
+      var d = new Date(b.playDate)
+      return c-d
+    })
+
+    const { token, id } = getLoginInfo()
+    myList.map((v, i) => {
+      return (
+        axios.post(`${process.env.REACT_APP_API_URL}/games/logs/resetlogcount`, {id, gameId: v.gameId}, {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        })
+        .then( res => {
+          console.log(res.data.gameList)
+        })
+      )
+    })
+      
+    // console.log(payload)
+    payload.map((v, i) => {
+      return (
+        dispatch(addPlayLog(v, false))
+        .then(res => {
+          console.log(res)
+        })
+        .catch(err => toast.error(err.response.data.error))
+      )
+    })
+  }
 
   const userRating = {
     size: 14,
@@ -254,6 +320,7 @@ const GameDetail = ({match}) => {
                     setIsEdit(false)
                     setIsShow(false)
                   }}
+                  // onClick={dummyPlayLog}
                 >
                   <i className='fas fa-edit w-6' />
                   Play log

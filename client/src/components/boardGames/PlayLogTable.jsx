@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { toast } from 'react-toastify'
 
 import { CustomModal } from '../../components/Modal'
@@ -51,11 +51,17 @@ const TableRow = ({ log, index, onShowBtnClick, onEditBtnClick, onDeleteBtnClick
 
 const PlayLogTable = ({logs, onEditBtn, onShowBtn}) => {
   const dispatch = useDispatch()
+  const user = useSelector(state => state.user.userData)
   const [isModal, setIsModal] = useState(false)
   const [ids, setIds] = useState({logId: '', gameId: ''})
   const [thisLogs, setThisLogs] = useState(logs)
 
-  const deleteSelectedLog = () => {    
+  const deleteSelectedLog = () => {
+    if(user.role === 'guest') {
+      toast.error('You are logged in as a guest. Please sign up first.')
+      return
+    }
+    
     dispatch(removeLog(ids))
     .then(res => {
       setThisLogs(res.filter((v) => v.gameId === ids.gameId))

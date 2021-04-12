@@ -107,14 +107,6 @@ export const logoutUser = () => {
 }
 
 export const updateLoginUser = (user) => { 
-  // return (dispatch) => {
-  //   dispatch(setMyList(user.gameList))
-  //   dispatch(setPlayLogs(user.playLog))
-  //   dispatch({
-  //     type: GETDATA_SUCCESS,
-  //     payload: user
-  //   })
-  // }
   return {
     type: GETDATA_SUCCESS,
     payload: user

@@ -16,9 +16,8 @@ const GamePanel = () => {
       setLoading(false)
       return
     }
-    dispatch(getGames('order_by', 'popularity'))
+    dispatch(getGames())
     .then((res) => {
-      // console.log(res)
       setGames(res)
       setLoading(false)
     })

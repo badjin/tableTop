@@ -68,6 +68,11 @@ const Profile = ({ history }) => {
     sendData.append('password', payload.password)
     sendData.append('profileImage', data.avatar[0])
     
+    if(user.role === 'guest') {
+      toast.error('You are logged in as a guest. Please sign up first.')
+      return
+    }
+
     dispatch(updateProfile(sendData, getLoginInfo().token))
     .then(res => {
       setIsPasswordEnable(false)

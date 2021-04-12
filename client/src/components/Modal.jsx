@@ -133,4 +133,3 @@ export const CustomModal = ({ title, btn, message, confirmClick, cancelClick }) 
 
   )
 }
-

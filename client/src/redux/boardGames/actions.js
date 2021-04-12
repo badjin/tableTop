@@ -34,7 +34,7 @@ export const getGames = () => {
           type:GET_BGAMES_SUCCESS,
           payload:res.data.games
         })
-        resolve(res.data.gameList)
+        resolve(res.data.games)
       })
       .catch(error => {
         dispatch({

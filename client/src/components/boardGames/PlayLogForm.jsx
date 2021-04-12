@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from "react"
+import React, { useState } from "react"
 import { useForm } from "react-hook-form"
 import DatePicker from "react-datepicker"
 
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { toast } from 'react-toastify'
 
 import { addPlayLog } from '../../redux'
@@ -13,11 +13,10 @@ const PlayLogForm = ({gameId, log, isEdit, isShow, submitClick, cancelClick}) =>
   const { 
     register, 
     handleSubmit,
-    formState
   } = useForm({
     mode: 'onChange',
     defaultValues: {
-      gameId,
+      gameId: gameId,
       comment: log.comment,
       playDate: log.playDate,
       players: log.players,
@@ -25,16 +24,9 @@ const PlayLogForm = ({gameId, log, isEdit, isShow, submitClick, cancelClick}) =>
       winner: log.winner
     }
   })
-  const [startDate, setStartDate] = useState(new Date())
-  const [isFiledChanged, setIsFieldChanged] = useState(false)
+  const user = useSelector(state => state.user.userData)
+  const [startDate, setStartDate] = useState(new Date(log.playDate))
   const dispatch = useDispatch()
-
-  useEffect(() => {    
-    setIsFieldChanged(formState.dirtyFields.comment 
-      || formState.dirtyFields.playDate 
-      || formState.dirtyFields.players 
-      || formState.dirtyFields.playTime)
-  }, [formState])
 
   const onSubmit = (data) => {
     const payload = {
@@ -47,6 +39,11 @@ const PlayLogForm = ({gameId, log, isEdit, isShow, submitClick, cancelClick}) =>
       winner: data.winner
     }
     
+    if(user.role === 'guest') {
+      toast.error('You are logged in as a guest. Please sign up first.')
+      return
+    }
+
     dispatch(addPlayLog(payload, isEdit))
     .then(res => {
       toast.success(`This Playlog has been ${isEdit ? 'updated' : 'added'} to the game`)
@@ -132,11 +129,10 @@ const PlayLogForm = ({gameId, log, isEdit, isShow, submitClick, cancelClick}) =>
               <div className='flex space-x-2'>
                 <button
                   type='submit'
-                  disabled={!isFiledChanged}
                   className='btn btn-submit mt-3'
                 >
-                  <i className={`fas ${isEdit ? 'fa-edit' : 'fa-cloud-upload-alt'} fa-edit fa 1x w-6 ${(!isFiledChanged) && 'text-gray-400'} -ml-2`} />
-                  <span className={`ml-3 ${(!isFiledChanged) && 'text-gray-400'}`}>{isEdit ? 'Update' : 'Submit'}</span>
+                  <i className={`fas ${isEdit ? 'fa-edit' : 'fa-cloud-upload-alt'} fa-edit fa 1x w-6 } -ml-2`} />
+                  <span className='ml-3'>{isEdit ? 'Update' : 'Submit'}</span>
                 </button>
 
                 <button

@@ -28,6 +28,26 @@ exports.addGame = async (req, res, next) => {
   })
 }
 
+exports.resetLogCount = async (req, res, next) => {  
+  let user = await Game.findById(req.body.id)
+  const game = user.gameList.find((v, i) => v.gameId === req.body.gameId)
+
+  if (game) {
+    const count = 0
+    await Game.updateOne(
+      {_id:req.body.id, 'gameList.gameId':req.body.gameId}, 
+      {$set: { 'gameList.$.logCount': count}}
+    )
+  }
+
+  user = await Game.findById(req.body.id)
+  res.status(200).json({
+    success: true,
+    logs: user.playLog,
+    gameList: user.gameList
+  })
+}
+
 exports.deleteGame = async (req, res, next) => {
   await Game.updateOne({_id:req.body.id}, {$pull: { gameList: {gameId: req.body.gameId}} })
 

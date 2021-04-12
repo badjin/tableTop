@@ -209,13 +209,13 @@ const Navbar = () => {
                     >
                       My List
                     </NavLink>
-                    <NavLink
+                    {/* <NavLink
                       to="#"
                       className="py-1 px-3 text-gray-500 hover:bg-gray-500 hover:text-gray-100 rounded-full uppercase text-sm"
                       activeClassName="active-navbar" onClick={closeMobileMenu}
                     >
                       Play Log
-                    </NavLink>
+                    </NavLink> */}
                     <NavLink
                       to="#"
                       className="py-1 px-3 text-gray-500 hover:bg-gray-500 hover:text-gray-100 rounded-full uppercase text-sm"

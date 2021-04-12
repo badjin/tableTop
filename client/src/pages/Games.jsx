@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from 'react'
-import { getLoginInfo } from '../helpers/auth'
 import { useHistory, useLocation } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
 import { toast } from 'react-toastify'
 import { BeatLoader } from 'react-spinners'
 
-import { getGames, getMyList } from '../redux'
+import { getLoginInfo } from '../helpers/auth'
+import { getGames, getMyList, setGame } from '../redux'
 import GameCard from '../components/boardGames/GameCard'
+import RandomPick from '../components/boardGames/RandomPick'
 
 const Games = () => {
   const history = useHistory()
@@ -16,7 +17,8 @@ const Games = () => {
   const [games, setGames] = useState([])
   const [isPopular, setIsPopular] = useState(true)
   const [loading, setLoading] = useState(true)
-
+  const [isModal, setIsModal] = useState(false)
+  
   const gameList = useSelector(state => state.boardGames.games)
   const myList = useSelector(state => state.boardGames.myList)
 
@@ -32,6 +34,7 @@ const Games = () => {
     .then(res => {
       if(!res.length){
         toast.error('There is no data in your list. Select a game from the popular list or use the search bar to select a game and add it to your list.')
+        history.push('/games')
         return
       }
       setGames(res)
@@ -50,6 +53,22 @@ const Games = () => {
 
   const gotoGames = () => {
     getList(gameList, getGames, true)
+  }
+
+  const setRandomModal = () => {
+    if(myList.length < 5) {
+      toast.error('The number of games on the list must be at least 5.')
+      return
+    }
+    setIsModal(true)
+  }
+
+  const moveToGameDetail = (game) => {
+    const id = game.id ? game.id : game.gameId
+    dispatch(setGame(game))
+    .then(res => {
+      if(res) history.push(`/games/${id}`)
+    })
   }
 
   useEffect(() => {
@@ -74,7 +93,7 @@ const Games = () => {
           <div className='flex items-center justify-between py-5 sm:px-5 space-x-2 sm:space-x-5'>
 
             <div className="flex items-center justify-between w-1/2">
-              <div className='h-6 px-2 rounded-full bg-yellow-500'>Rank</div>
+              <div className='rounded-full px-2 text-xs font-bold border-2 border-yellow-500 bg-yellow-500'>Rank</div>
               <button 
                 disabled={isPopular}
                 className={`uppercase ${isPopular ? 'text-primary cursor-default font-bold' : 'btn-text'}`} 
@@ -94,9 +113,25 @@ const Games = () => {
               >
                 My List
               </button>
-              <div className='h-6 px-2 rounded-full bg-indigo-500 text-gray-200'>Logs</div>
+              <div className="flex items-center space-x-2">
+                <button 
+                  disabled={isPopular}  
+                  className={`rounded-full px-2 text-xs font-bold tracking-wider cursor-pointer border-2 transition ease-out duration-500 hover:text-white text-secondary-100 border-secondary-100 hover:bg-secondary-100 focus:outline-none hidden ${!isPopular && 'sm:block'}`}
+                  onClick={() => setRandomModal()}
+                >
+                  Random
+                </button>                
+                <div className='rounded-full px-2 text-xs font-bold border-2 border-indigo-500 bg-indigo-500 text-gray-200'>Logs</div>
+
+              </div>
             </div>
           </div>
+          <button 
+            className={`btn-round mb-4 text-secondary-100 border-secondary-100 hover:bg-secondary-100 focus:outline-none sm:hidden ${isPopular && 'hidden'}`}
+            onClick={() => setRandomModal()}
+          >
+            Random
+          </button>
 
           <div className='flex items-start justify-center px-5'>
             
@@ -116,7 +151,17 @@ const Games = () => {
                   </div>
                 )
               }
-          </div>    
+          </div>
+          { isModal && !isPopular &&
+            <RandomPick
+              games={myList}
+              randomClick={(randomPick) => {                
+                setIsModal(false)
+                moveToGameDetail(randomPick)
+              }} 
+              cancelClick={() => setIsModal(false)}
+            /> 
+          }          
         </div>
       )}
     </div>

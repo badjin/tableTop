@@ -42,20 +42,20 @@ export const AccountDropdown = ({user, onLogout}) => {
             >
               My List
             </Link>
-            <Link
+            {/* <Link
               to='#'
               className="block px-4 py-2 text-gray-800 hover:bg-primary hover:text-white"
               onClick={() => {setIsOpen(false)}}
             >
               Play Log
-            </Link>
-            <Link
+            </Link> */}
+            {/* <Link
               to='#'
               className="block px-4 py-2 text-gray-800 hover:bg-primary hover:text-white border-b-2"
               onClick={() => {setIsOpen(false)}}
             >
               Random Pick
-            </Link>
+            </Link> */}
             <Link
               to='/'
               className="block px-4 py-2 text-gray-800 hover:bg-primary hover:text-white"
