@@ -1,6 +1,6 @@
 require('dotenv').config({ path: './config/config.env'})
 const express = require('express')
-const morgan = require('morgan') // to get info for each request
+const path = require('path')
 const connectDB = require('./config/db')
 const errorHandler = require('./middlewares/error')
 const cors = require('cors')
@@ -26,15 +26,15 @@ app.use('/api', require('./routes/auth.route'))
 app.use('/api', require('./routes/user.route'))
 app.use('/api', require('./routes/game.route'))
 
-app.use((req, res) => {
-  res.status(404).json({
-      success: false,
-      error: "Page not found"
-  })
-})
-
 // Error Handler (Should be last piece of middleware)
 app.use(errorHandler)
+
+if(process.env.NODE_ENV === 'production') {
+  app.use(express.static(path.join(__dirname, '/client/build')))
+  app.get('*', (req, res) => {
+    res.sendFile(path.join(__dirname, 'client', 'build', 'index.html'))
+  })
+}
 
 const PORT = process.env.PORT || 5000
 
