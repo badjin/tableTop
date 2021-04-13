@@ -10,10 +10,11 @@ node_modules/
 /coverage
 
 # production
-#/build
+/build
 
 # misc
-
+.env
+config.env
 firebaseConfig.json
 .DS_Store
 .env.local
