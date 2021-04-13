@@ -26,6 +26,13 @@ app.use('/api', require('./routes/auth.route'))
 app.use('/api', require('./routes/user.route'))
 app.use('/api', require('./routes/game.route'))
 
+// app.use((req, res) => {
+//   res.status(404).json({
+//       success: false,
+//       error: "Page not found"
+//   })
+// })
+
 // Error Handler (Should be last piece of middleware)
 app.use(errorHandler)
 
