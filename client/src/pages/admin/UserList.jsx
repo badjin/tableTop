@@ -11,6 +11,7 @@ const TableRow = ({ user, index, pageNumber, onEditBtnClick, onDeleteBtnClick })
   const role = {
     'admin': 'bg-yellow-600',
     'staff': 'bg-green-600',
+    'guest': 'bg-blue-600',
     'customer': 'bg-purple-600'
   }
   
