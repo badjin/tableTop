@@ -8,13 +8,16 @@ import { getLoginInfo } from '../helpers/auth'
 import GamePanel from '../components/boardGames/GamePanel'
 import { loginUser } from '../redux'
 import { authenticate } from '../helpers/auth'
+import RandomPick from '../components/boardGames/RandomPick'
 
 const Home = () => {
   const dispatch = useDispatch()
   const history = useHistory()
   const bgImages = useSelector(state => state.bgImage.bgImages)
   const currentBgImage = useSelector(state => state.bgImage.currentBgImage)
+  const myList = useSelector(state => state.boardGames.myList)
   const [ backgroundImage, setBackgroundImage ] = useState('')
+  const [isModal, setIsModal] = useState(false)
   
   useEffect(() => {
     let tempImage = ''
@@ -30,9 +33,7 @@ const Home = () => {
   const setAuth = (res) => {
     authenticate(res, () => {
       toast.success(`Hey ${res.user.name}, Welcome back!`)
-      res.user.gameList.length ? history.push('/games/mylist') : history.push('/')
-      // if(res.success && res.user.role === 'admin') history.push('/admin/users')
-      // else history.push('/')
+      history.push('/')
     })
   }
 
@@ -40,6 +41,14 @@ const Home = () => {
     dispatch(loginUser({email: 'guest@gmail.com', password: 'password'}, 'login'))
     .then((res) => setAuth(res))
     .catch((error) => toast.error(error))    
+  }
+  
+  const setRandomModal = () => {
+    if(myList.length < 5) {
+      toast.error('The number of games on the list must be at least 5.')
+      return
+    }
+    setIsModal(true)
   }
 
   return (
@@ -52,13 +61,22 @@ const Home = () => {
               <div className='sm:w-1/2 px-5'>
                 <h2 className='text-4xl text-gray-500 mb-6'>Welcome</h2>
                 <p>For you who are tired of your daily life, we recommend a board game to play with your family or friends. Don't think about what to play among the games you have. Sign up now and make your own game list right away. And get recommendations.</p>
-                <div className={`my-3 mb-4 flex items-center justify-center ${ getLoginInfo() && 'hidden' }`}>
-                  <button 
-                    className='btn-round text-secondary-100 border-secondary-100 hover:bg-secondary-100 focus:outline-none'
-                    onClick={guestLogin}
-                  >
-                    Guest Login
-                  </button>
+                <div className='my-3 mb-4 flex items-center justify-center'>
+                  { getLoginInfo() ? (                    
+                    <button 
+                      className='btn-round text-red-400 border-red-400 hover:bg-red-400 focus:outline-none'
+                      onClick={() => setRandomModal()}
+                    >
+                      Random Pick
+                    </button>
+                  ) : (                    
+                    <button 
+                      className='btn-round text-secondary-100 border-secondary-100 hover:bg-secondary-100 focus:outline-none'
+                      onClick={guestLogin}
+                    >
+                      Guest Login
+                    </button>
+                  )}
                 </div>
               </div>
               <div className='sm:w-1/2 overflow-hidden'>
@@ -74,6 +92,15 @@ const Home = () => {
                 <Link to='/games' className='btn-text text-sm'>See More</Link>
               </div>
             </div>
+            { isModal &&
+              <RandomPick
+                games={myList}
+                randomClick={() => {
+                  setIsModal(false)
+                }} 
+                cancelClick={() => setIsModal(false)}
+              /> 
+            }
           </>
         )
       }      

@@ -1,7 +1,8 @@
 import React, { useState, useRef } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
+import { useHistory } from 'react-router-dom'
 import mobileLogo from "../../assests/mobileLogo.png"
-import { getPlayLogs } from '../../redux'
+import { getPlayLogs, setGame } from '../../redux'
 
 const RandomPick = ({ games, randomClick, cancelClick }) => {
   const [isRunRandom, setIsRunRandom] = useState(false)
@@ -12,6 +13,15 @@ const RandomPick = ({ games, randomClick, cancelClick }) => {
   const buttonRef = useRef(null)
   const dispatch = useDispatch()
   const [playLogs, setPlayLogs] = useState(useSelector(state => state.boardGames.playLogs))
+  const history = useHistory()
+
+  const moveToGameDetail = (game) => {
+    const id = game.id ? game.id : game.gameId
+    dispatch(setGame(game))
+    .then(res => {
+      if(res) history.push(`/games/${id}`)
+    })
+  }
 
   const runRandom = () => {
     setIsRunRandom(true)
@@ -28,7 +38,8 @@ const RandomPick = ({ games, randomClick, cancelClick }) => {
         setShowRandomResult(true)
         setIsRunRandom(false)
       } else {
-        randomClick(randomPick)
+        moveToGameDetail(randomPick)
+        randomClick()
       }
     }    
   }

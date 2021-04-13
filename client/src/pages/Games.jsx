@@ -5,7 +5,7 @@ import { toast } from 'react-toastify'
 import { BeatLoader } from 'react-spinners'
 
 import { getLoginInfo } from '../helpers/auth'
-import { getGames, getMyList, setGame } from '../redux'
+import { getGames, getMyList } from '../redux'
 import GameCard from '../components/boardGames/GameCard'
 import RandomPick from '../components/boardGames/RandomPick'
 
@@ -61,15 +61,7 @@ const Games = () => {
       return
     }
     setIsModal(true)
-  }
-
-  const moveToGameDetail = (game) => {
-    const id = game.id ? game.id : game.gameId
-    dispatch(setGame(game))
-    .then(res => {
-      if(res) history.push(`/games/${id}`)
-    })
-  }
+  }  
 
   useEffect(() => {
     location.pathname === '/games/mylist'
@@ -116,7 +108,7 @@ const Games = () => {
               <div className="flex items-center space-x-2">
                 <button 
                   disabled={isPopular}  
-                  className={`rounded-full px-2 text-xs font-bold tracking-wider cursor-pointer border-2 transition ease-out duration-500 hover:text-white text-secondary-100 border-secondary-100 hover:bg-secondary-100 focus:outline-none hidden ${!isPopular && 'sm:block'}`}
+                  className={`rounded-full px-2 text-xs font-bold tracking-wider cursor-pointer border-2 transition ease-out duration-500 hover:text-white text-red-400 border-red-400 hover:bg-red-400 focus:outline-none hidden ${!isPopular && 'sm:block'}`}
                   onClick={() => setRandomModal()}
                 >
                   Random
@@ -155,13 +147,12 @@ const Games = () => {
           { isModal && !isPopular &&
             <RandomPick
               games={myList}
-              randomClick={(randomPick) => {                
+              randomClick={() => {                
                 setIsModal(false)
-                moveToGameDetail(randomPick)
               }} 
               cancelClick={() => setIsModal(false)}
             /> 
-          }          
+          }
         </div>
       )}
     </div>
