@@ -39,6 +39,7 @@ const GameDetail = ({match}) => {
   })
   const [isEdit, setIsEdit] = useState(false)
   const [isShow, setIsShow] = useState(false)
+  const [wasTruncated, setWasTruncated] = useState(false)
 
   useEffect(() => {
     // refresh 후에 데이터 날라감
@@ -280,8 +281,8 @@ const GameDetail = ({match}) => {
                     <div className={`text-right text-sm mt-3 ${ isLogForm && 'hidden' }`}>
                       <button className='btn-text' onClick={() => setIsTruncated(true)}>Show more</button>
                     </div>
-                  }>
-                    <div>
+                  } onTruncate={(flag) => setWasTruncated(flag)}>
+                    <div className={`${(isLogForm && !wasTruncated) && 'h-80'}`}>
                       {game.description_preview}
                     </div>
                   </TruncateMarkup>
@@ -332,6 +333,7 @@ const GameDetail = ({match}) => {
                   onEditBtn={(log) => {
                     if(isLogForm) return
                     setCurrentLog(log)
+                    setIsTruncated(false)
                     setIsLogForm(true)
                     setIsShow(false)
                     setIsEdit(true)
@@ -339,6 +341,7 @@ const GameDetail = ({match}) => {
                   onShowBtn={(log) => {
                     if(isLogForm) return
                     setCurrentLog(log)
+                    setIsTruncated(false)
                     setIsLogForm(true)
                     setIsShow(true)
                     setIsEdit(true)
