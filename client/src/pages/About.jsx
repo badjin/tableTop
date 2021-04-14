@@ -93,7 +93,7 @@ const About = () => {
                   <span>Unsplash</span>
                 </div>
               </a>            
-              <a href='https://github.com/badjin/MERN_Authentication' target='_blank' className='hover:text-indigo-500' rel='noopener noreferrer'>
+              <a href='https://github.com/badjin/tableTop' target='_blank' className='hover:text-indigo-500' rel='noopener noreferrer'>
                 <span>Github</span>
                 <i className='fab fa-github-square  w-4 ml-3'></i>
               </a>             
