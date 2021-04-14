@@ -20,7 +20,7 @@ Make your own game diary and keep your memories with your friends or family.
 
 ### Install
 ```
-git clone https://github.com/badjin/MERN_Authentication.git your-project-name
+git clone https://github.com/badjin/tableTop.git your-project-name
 npm install
 cd client
 npm install
