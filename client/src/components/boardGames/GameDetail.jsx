@@ -11,7 +11,7 @@ import { getLoginInfo } from '../../helpers/auth'
 import { CustomModal } from '../Modal'
 import PlayLogForm from './PlayLogForm'
 import PlayLogTable from './PlayLogTable'
-import axios from 'axios'
+// import axios from 'axios'
 
 const GameDetail = ({match}) => {
   const location = useLocation()
@@ -101,58 +101,58 @@ const GameDetail = ({match}) => {
 
   })
 
-  const getRandomData = () => {
-    const gameId = myList[Math.floor(Math.random() * myList.length)].gameId
-    const startDate = new Date(2019, 0, 1)
-    const endDate = new Date()
-    const playDate = new Date(startDate.getTime() + Math.random() * (endDate.getTime() - startDate.getTime()))
-    const playersArray = ['All family', 'Oli, Ash, Lani & Jin', 'Friends', 'Neighbors', 'Colleagues']
-    const players = playersArray[Math.floor(Math.random() * playersArray.length)]
-    const randomNum1 = Math.floor(Math.random() * 290) + 1
-    const playTime = Math.floor(randomNum1 * 10 / 100) * 10 + 30
-    const comment = 'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Laboriosam vel asperiores amet atque sint tenetur blanditiis quibusdam officiis. Velit tempora ut vero voluptatum aperiam nemo dolores neque iste beatae nesciunt.'
-    const winnerArray = ['Oli', 'Ash', 'Lani', 'Jin']
-    const winner = winnerArray[Math.floor(Math.random() * winnerArray.length)]
-    return { gameId, playDate, players, playTime, comment, winner }
-  }
+  // const getRandomData = () => {
+  //   const gameId = myList[Math.floor(Math.random() * myList.length)].gameId
+  //   const startDate = new Date(2019, 0, 1)
+  //   const endDate = new Date()
+  //   const playDate = new Date(startDate.getTime() + Math.random() * (endDate.getTime() - startDate.getTime()))
+  //   const playersArray = ['All family', 'Oli, Ash, Lani & Jin', 'Friends', 'Neighbors', 'Colleagues']
+  //   const players = playersArray[Math.floor(Math.random() * playersArray.length)]
+  //   const randomNum1 = Math.floor(Math.random() * 290) + 1
+  //   const playTime = Math.floor(randomNum1 * 10 / 100) * 10 + 30
+  //   const comment = 'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Laboriosam vel asperiores amet atque sint tenetur blanditiis quibusdam officiis. Velit tempora ut vero voluptatum aperiam nemo dolores neque iste beatae nesciunt.'
+  //   const winnerArray = ['Oli', 'Ash', 'Lani', 'Jin']
+  //   const winner = winnerArray[Math.floor(Math.random() * winnerArray.length)]
+  //   return { gameId, playDate, players, playTime, comment, winner }
+  // }
 
-  const dummyPlayLog = () => {
-    const payload = []
+  // const dummyPlayLog = () => {
+  //   const payload = []
 
-    for(let i = 0; i < 100; i++){
-      payload.push(getRandomData())
-    }
-    payload.sort((a,b) => {
-      var c = new Date(a.playDate)
-      var d = new Date(b.playDate)
-      return c-d
-    })
+  //   for(let i = 0; i < 100; i++){
+  //     payload.push(getRandomData())
+  //   }
+  //   payload.sort((a,b) => {
+  //     var c = new Date(a.playDate)
+  //     var d = new Date(b.playDate)
+  //     return c-d
+  //   })
 
-    const { token, id } = getLoginInfo()
-    myList.map((v, i) => {
-      return (
-        axios.post(`${process.env.REACT_APP_API_URL}/games/logs/resetlogcount`, {id, gameId: v.gameId}, {
-          headers: {
-            Authorization: `Bearer ${token}`
-          }
-        })
-        .then( res => {
-          console.log(res.data.gameList)
-        })
-      )
-    })
+  //   const { token, id } = getLoginInfo()
+  //   myList.map((v, i) => {
+  //     return (
+  //       axios.post(`${process.env.REACT_APP_API_URL}/games/logs/resetlogcount`, {id, gameId: v.gameId}, {
+  //         headers: {
+  //           Authorization: `Bearer ${token}`
+  //         }
+  //       })
+  //       .then( res => {
+  //         console.log(res.data.gameList)
+  //       })
+  //     )
+  //   })
       
-    // console.log(payload)
-    payload.map((v, i) => {
-      return (
-        dispatch(addPlayLog(v, false))
-        .then(res => {
-          console.log(res)
-        })
-        .catch(err => toast.error(err.response.data.error))
-      )
-    })
-  }
+  //   // console.log(payload)
+  //   payload.map((v, i) => {
+  //     return (
+  //       dispatch(addPlayLog(v, false))
+  //       .then(res => {
+  //         console.log(res)
+  //       })
+  //       .catch(err => toast.error(err.response.data.error))
+  //     )
+  //   })
+  // }
 
   const userRating = {
     size: 14,
