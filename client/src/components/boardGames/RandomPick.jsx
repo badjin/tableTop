@@ -9,6 +9,7 @@ const RandomPick = ({ games, randomClick, cancelClick }) => {
   const [randomGames, setRandomGames] = useState([])
   const [randomPick, setRandomPick] = useState('')
   const [showRandomResult, setShowRandomResult] = useState(false)
+  const [theLatestDate, setTheLatestDate] = useState(null)
   const [buttonClickCount, setButtonClickCount] = useState(0)
   const buttonRef = useRef(null)
   const dispatch = useDispatch()
@@ -34,6 +35,7 @@ const RandomPick = ({ games, randomClick, cancelClick }) => {
       setButtonClickCount(buttonClickCount+1)
     } else {
       if(!showRandomResult) {
+        setTheLatestDate(null)
         setRandomPick(getGames4Last())
         setShowRandomResult(true)
         setIsRunRandom(false)
@@ -77,20 +79,37 @@ const RandomPick = ({ games, randomClick, cancelClick }) => {
       .then(res => setPlayLogs(res))
     }
 
-    let isIn2Weeks = false
+    // get logs that have the same gameId with randomeOne
     const logs = playLogs.filter((v, i) => v.gameId === game.gameId)
-    logs.map((v, i) => {
-      if(wasWeeksAgo(2, new Date(v.playDate))) isIn2Weeks = true
-      return isIn2Weeks
+    
+    if (!logs.length) return false
+
+    // sort logs by date
+    logs.sort((a,b) => {
+      var c = new Date(a.playDate)
+      var d = new Date(b.playDate)
+      return c-d
     })
-    return isIn2Weeks
+
+    // check if the latest date was in 2 weeks
+    if(!wasWeeksAgo(2, new Date(logs[logs.length-1].playDate))) {
+      setTheLatestDate(logs[logs.length-1].playDate)
+      return false
+    }
+    // logs.map((v, i) => {
+    //   if(wasWeeksAgo(2, new Date(v.playDate))) isIn2Weeks = true
+    //   return isIn2Weeks
+    // })
+    return true
   }
 
+  // Set the random result after animate random
   const getGames4Last = () => {
     let index = Math.floor(Math.random() * games.length)
     if(!games[index].logCount) {
       return games[index]
     }
+    // get the game excepted play in 2 weeks
     let count = 0
     while(isWithin2Weeks(games[index])){      
       index = Math.floor(Math.random() * games.length)
@@ -183,12 +202,17 @@ const RandomPick = ({ games, randomClick, cancelClick }) => {
                     ))}
                   </div>
                 ) : ( showRandomResult ? (
-                  <div className="flex items-center justify-center space-x-3 mt-2">               
-                    <div className='h-12 w-12 rounded-full border-2 border-gray-500 overflow-hidden mt-2'>
-                      <img className='w-12 h-12' src={randomPick.images.thumb} alt="Game"/>
+                  <>
+                    <div className="flex items-center justify-center space-x-3 mt-2">               
+                      <div className='h-12 w-12 rounded-full border-2 border-gray-500 overflow-hidden mt-2'>
+                        <img className='w-12 h-12' src={randomPick.images.thumb} alt="Game"/>
+                      </div>
+                      <div className='font-bold mt-1'>{randomPick.name}</div>                      
                     </div>
-                    <div className='font-bold mt-1'>{randomPick.name}</div>
-                  </div>
+                    {theLatestDate && (
+                        <div className='text-sm text-gray-600 mt-1'>The lasted play date was {new Date(theLatestDate).toLocaleDateString()}</div>                      
+                      )}
+                  </>
                 ) : (
                   <div className="mt-2">
                     <p className="text-sm text-gray-500">

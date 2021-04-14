@@ -122,11 +122,11 @@ const GameDetail = ({match}) => {
   //   for(let i = 0; i < 100; i++){
   //     payload.push(getRandomData())
   //   }
-  //   payload.sort((a,b) => {
-  //     var c = new Date(a.playDate)
-  //     var d = new Date(b.playDate)
-  //     return c-d
-  //   })
+    // payload.sort((a,b) => {
+    //   var c = new Date(a.playDate)
+    //   var d = new Date(b.playDate)
+    //   return c-d
+    // })
 
   //   const { token, id } = getLoginInfo()
   //   myList.map((v, i) => {
