@@ -6,7 +6,7 @@ import ReactStars from "react-rating-stars-component"
 import { toast } from 'react-toastify'
 import TruncateMarkup from 'react-truncate-markup'
 
-import { getGameDetail, addGame2MyList, removeGame, getPlayLogs, getMyList, addPlayLog } from '../../redux'
+import { getGameDetail, addGame2MyList, removeGame, getPlayLogs, getMyList } from '../../redux'
 import { getLoginInfo } from '../../helpers/auth'
 import { CustomModal } from '../Modal'
 import PlayLogForm from './PlayLogForm'
