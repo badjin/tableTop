@@ -26,4 +26,8 @@ router.post('/activation', activationEmail)
 
 router.post('/googlelogin', googleLogin)
 
+// router.get('/bgg', (req, res) => {
+//   console.log('adsfds')
+// })
+
 module.exports = router

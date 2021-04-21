@@ -91,7 +91,7 @@ const Games = () => {
                 className={`uppercase ${isPopular ? 'text-primary cursor-default font-bold' : 'btn-text'}`} 
                 onClick={gotoGames}
               >
-                Popular
+                Tranding
               </button>
             </div>
 

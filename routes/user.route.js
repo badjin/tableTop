@@ -21,7 +21,7 @@ router.put('/user/update',
 )
 
 router.get('/settings', (req, res, next) => {
-  try {    
+  try {
     res.status(200).json({
       success: true,
       settings

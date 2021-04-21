@@ -3,6 +3,7 @@ import { useHistory } from 'react-router-dom'
 import { useDispatch } from 'react-redux'
 import { setGame } from '../../redux'
 import axios from 'axios'
+import {parseBggXmlApi2SearchResponse} from '@code-bucket/board-game-geek'
 
 const SearchGame = () => {
   const history = useHistory()
@@ -14,11 +15,17 @@ const SearchGame = () => {
 
   const searchGameByKeyword = async (keyword) => {
     try {
-      const result = await axios(`https://api.boardgameatlas.com/api/search?name=${keyword}&limit=5&client_id=${process.env.REACT_APP_BG_ATLAS_ID}`)
-      if(result.data.games.length) {
+      // const result = await axios.post(`${process.env.REACT_APP_API_URL}/bgg/search`, keyword)
+
+      const response = await axios.get(`https://api.geekdo.com/xmlapi2/search?query=${keyword}`)
+      // var xml = new XMLParser().parseFromString(response.data); 
+      // console.log(xml)
+      // console.log(response.data[0])
+      const result = parseBggXmlApi2SearchResponse(response.data)
+      // const result = await axios(`https://api.boardgameatlas.com/api/search?name=${keyword}&limit=5&client_id=${process.env.REACT_APP_BG_ATLAS_ID}`)
+      if(result.items.length) {
         setIsOpen(true)
-        setGames(result.data.games)
-        // console.log(result.data.games)
+        setGames(result.items)
       }
     } catch (error) {
       console.log(error)
@@ -53,8 +60,8 @@ const SearchGame = () => {
         </svg>
       </button>
       {isOpen && 
-        <div className='absolute left-0 mt-1 w-full py-2 bg-white rounded-lg shadow-xl flex flex-col items-center justify-center'>
-        {games && games.map((game, index) => (
+        <div className='absolute left-0 mt-1 w-full py-2 bg-white rounded-lg shadow-xl flex flex-col items-center justify-center'>          
+        {games && games.filter((game, index) => (index < 10)).map((game, index) => (
           <button 
             key={index} 
             className='btn-search w-full text-gray-700' 
@@ -70,11 +77,12 @@ const SearchGame = () => {
             <div className='flex items-center justify-between'>
               <div className='text-left w-4/5'>
                 <span>{game.name}</span>
-                <span>({game.year_published})</span>
+                <span>({game.yearpublished})</span>
+                {/* <span>({game.year_published})</span> */}
               </div>
-              <div className='h-12 w-12 rounded overflow-hidden'>
+              {/* <div className='h-12 w-12 rounded overflow-hidden'>
                 <img className='w-12 h-12' src={game.images.thumb} alt="Thumbnail"/>
-              </div>
+              </div> */}
             </div>
           </button>
         ))}

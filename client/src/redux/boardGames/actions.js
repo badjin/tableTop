@@ -24,17 +24,37 @@ import {
 
 import { getLoginInfo } from '../../helpers/auth'
 
+// export const getGames = () => {
+//   return (dispatch) => {
+//     return new Promise((resolve, reject) => {      
+//       axios(`https://api.boardgameatlas.com/api/search?limit=96&client_id=${process.env.REACT_APP_BG_ATLAS_ID}`)
+//       .then( res => {
+//         dispatch({
+//           type:GET_BGAMES_SUCCESS,
+//           payload:res.data.games
+//         })
+//         resolve(res.data.games)
+//       })
+//       .catch(error => {
+//         dispatch({
+//           type: GET_BGAMES_FAILURE
+//         })
+//         reject(error)
+//       })
+//     })      
+//   }
+// }
+
 export const getGames = () => {
   return (dispatch) => {
     return new Promise((resolve, reject) => {
-      // axios(`https://api.boardgameatlas.com/api/search?gt_reddit_day_count=30&limit=96&client_id=${process.env.REACT_APP_BG_ATLAS_ID}`)
-      axios(`https://api.boardgameatlas.com/api/search?limit=96&client_id=${process.env.REACT_APP_BG_ATLAS_ID}`)
+      axios.get(`${process.env.REACT_APP_API_URL}/bgg/hot50`)
       .then( res => {
         dispatch({
           type:GET_BGAMES_SUCCESS,
-          payload:res.data.games
+          payload:res.data.gameList
         })
-        resolve(res.data.games)
+        resolve(res.data.gameList)
       })
       .catch(error => {
         dispatch({
@@ -46,16 +66,37 @@ export const getGames = () => {
   }
 }
 
-export const getGameDetail = (keyword) => {
+// export const getGameDetail = (keyword) => {
+//   return (dispatch) => {
+//     return new Promise((resolve, reject) => {
+//       axios(`https://api.boardgameatlas.com/api/search?ids=${keyword}&client_id=${process.env.REACT_APP_BG_ATLAS_ID}`)
+//       .then( res => {
+//         dispatch({
+//           type:GET_BGAME_DETAIL_SUCCESS,
+//           payload:res.data.games[0]
+//         })
+//         resolve(res.data.games[0])
+//       })
+//       .catch(error => {
+//         dispatch({
+//           type: GET_BGAME_DETAIL_FAILURE
+//         })
+//         reject(error)
+//       })
+//     })      
+//   }
+// }
+
+export const getGameDetail = (id) => {
   return (dispatch) => {
     return new Promise((resolve, reject) => {
-      axios(`https://api.boardgameatlas.com/api/search?ids=${keyword}&client_id=${process.env.REACT_APP_BG_ATLAS_ID}`)
+      axios.post(`${process.env.REACT_APP_API_URL}/bgg/game`, {id})
       .then( res => {
         dispatch({
           type:GET_BGAME_DETAIL_SUCCESS,
-          payload:res.data.games[0]
+          payload:res.data.gameDetail
         })
-        resolve(res.data.games[0])
+        resolve(res.data.gameDetail)
       })
       .catch(error => {
         dispatch({
@@ -95,6 +136,7 @@ export const getMyList = () => {
   const { id, token } = getLoginInfo()
   return (dispatch) => {
     return new Promise((resolve, reject) => {
+      console.log(id)
       axios.get(`${process.env.REACT_APP_API_URL}/games/${id}`, {
         headers: {
             Authorization: `Bearer ${token}`
@@ -120,7 +162,7 @@ export const getMyList = () => {
 export const addGame2MyList = (game) => {
   const { id, token } = getLoginInfo()
   return (dispatch) => {
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve, reject) => {      
       axios.post(`${process.env.REACT_APP_API_URL}/games/add`, {id, game}, {
         headers: {
             Authorization: `Bearer ${token}`

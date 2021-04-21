@@ -5,6 +5,7 @@ import { BeatLoader } from 'react-spinners'
 import ReactStars from "react-rating-stars-component"
 import { toast } from 'react-toastify'
 import TruncateMarkup from 'react-truncate-markup'
+import Parser from 'html-react-parser'
 
 import { getGameDetail, addGame2MyList, removeGame, getPlayLogs, getMyList } from '../../redux'
 import { getLoginInfo } from '../../helpers/auth'
@@ -43,23 +44,25 @@ const GameDetail = ({match}) => {
 
   useEffect(() => {
     // refresh 후에 데이터 날라감
-    if(!myList.length) {
-      dispatch(getMyList())
-      .then(res => {
-        setMyList(res)
-        setIsOwned(res.find((value) => (value.gameId === match.params.id)))
-      })
-    } else setIsOwned(myList.length && myList.find((value) => (value.gameId === match.params.id)))
-
-    if(!playLogs.length) {
-      dispatch(getPlayLogs())
-      .then(res => setPlayLogs(res))
+    if(getLoginInfo()) {
+      if(!myList.length) {
+        dispatch(getMyList())
+        .then(res => {
+          setMyList(res)
+          setIsOwned(res.find((value) => (value.gameId === match.params.id)))
+        })
+      } else setIsOwned(myList.length && myList.find((value) => (value.gameId === match.params.id)))
+  
+      if(!playLogs.length) {
+        dispatch(getPlayLogs())
+        .then(res => setPlayLogs(res))
+      }
     }
 
     dispatch(getGameDetail(match.params.id))
     .then((res) => {
       setThisLogs(playLogs.filter((v) => v.gameId === res.id))
-      
+      res.description = res.description.split("&#10;").join("<br />")
       setGame(res)
       setGameId(match.params.id)
       setLoading(false)
@@ -156,7 +159,7 @@ const GameDetail = ({match}) => {
 
   const userRating = {
     size: 14,
-    value: game.average_user_rating,
+    value: game.averageRating/2,
     isHalf: true,
     edit: false
   }
@@ -209,13 +212,13 @@ const GameDetail = ({match}) => {
           <div className='flex flex-col sm:flex-row items-center sm:items-start p-10 sm:space-x-4'>
             <div className='sm:w-1/2  overflow-hidden'>
               <div className='flex justify-center'>
-                <img className='h-64 bg-cover bg-center bg-no-repeat rounded' src={game.image_url} alt="Title"/>
+                <img className='h-64 bg-cover bg-center bg-no-repeat rounded' src={game.image} alt="Title"/>
               </div>
               <div className='flex items-center justify-between mt-2'>
                 <div className='flex items-center justify-start space-x-2'>
                   <ReactStars {...userRating} />
-                  <span className='text-sm'>{Number(game.average_user_rating).toFixed(1)} / 5</span>
-                  <span className='block text-xs'>({game.num_user_ratings} ratings)</span>
+                  <span className='text-sm'>{Number(game.averageRating).toFixed(1)} / 10</span>
+                  {/* <span className='block text-xs'>({game.num_user_ratings} ratings)</span> */}
                 </div>
                 <div>
                   <span className='text-sm'>Rank</span>
@@ -225,37 +228,29 @@ const GameDetail = ({match}) => {
               <div className='mt-2'>
                 <div className="flex items-center justify-between">
                   <div>
-                    <i className='fas fa-users w-6 text-primary' />
-                    <span>{game.min_players} - {game.max_players}</span>
+                    <i className='fas fa-users w-6 text-primary mr-1' />
+                    <span>{game.minPlayers} - {game.maxPlayers}</span>
                   </div>
-                  <div>
+                  <div className='mr-5'>
                     <i className='fas fa-clock w-6 text-primary' />
-                    <span>{game.min_playtime} - {game.max_playtime}</span>
+                    <span>{game.playingTime}</span>
                   </div>
                 </div>
                 <div className="flex items-center justify-between">
                   <div className='ml-1'>
-                    <i className='fas fa-user w-6 text-primary' />
-                    <span>{game.min_age}+</span>
+                    <i className='fas fa-palette w-6 text-primary' />
+                    <span>{game.designers[0]}</span>
                   </div>
                   <div>
                     <i className='fas fa-calendar-alt w-6 text-primary' />
-                    <span>{game.year_published}</span>
+                    <span>{game.yearPublished}</span>
                   </div>
                 </div>
               </div>
               <div className='my-3 flex items-center justify-between text-sm px-2'>  
-                { game.rules_url && (
-                  <a href={`${game.rules_url}`} target='_blank' className='btn-text ' rel='noopener noreferrer'>
-                    See Rules
-                  </a>
-                ) }    
-                
-                { game.url && (
-                  <a href={`${game.url}`} target='_blank' className='btn-text ' rel='noopener noreferrer'>
-                    More information
-                  </a>     
-                )}
+                <a href={`https://boardgamegeek.com/boardgame/${gameId}`} target='_blank' className='btn-text ' rel='noopener noreferrer'>
+                  More information
+                </a>  
               </div>
             </div>
             <div className='relative sm:w-1/2 text-sm sm:px-5 sm:mt-0 mt-5'>
@@ -283,13 +278,13 @@ const GameDetail = ({match}) => {
                     </div>
                   } onTruncate={(flag) => setWasTruncated(flag)}>
                     <div className={`${(isLogForm && !wasTruncated) && 'h-80'}`}>
-                      {game.description_preview}
+                      { Parser(game.description) }
                     </div>
                   </TruncateMarkup>
                 ) 
                 : (
                   <div>
-                    {game.description_preview}
+                    { Parser(game.description) }
                   </div>
                 )
               }

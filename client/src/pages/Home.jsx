@@ -85,8 +85,8 @@ const Home = () => {
             </div>
 
             <div className='px-10'>
-              <h2 className='text-4xl text-gray-500 px-5'>Popular Board games</h2>
-              <p className='px-5 mb-6'>These are the most popular board games widely loved by the community in terms of consistency in game page visits, number of ratings, mentions, and other criteria.</p>
+              <h2 className='text-4xl text-gray-500 px-5'>Top Tranding Board games</h2>
+              <p className='px-5 mb-6'>These are the hottest board games that have jumped the most in number of game page visits and mentions over the past week.</p>
               <GamePanel />
               <div className="flex items-center justify-center mb-4">
                 <Link to='/games' className='btn-text text-sm'>See More</Link>
