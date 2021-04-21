@@ -5,6 +5,7 @@ import { BeatLoader } from 'react-spinners'
 import ReactStars from "react-rating-stars-component"
 import { toast } from 'react-toastify'
 import TruncateMarkup from 'react-truncate-markup'
+import Parser from 'html-react-parser'
 
 import { getGameDetail, addGame2MyList, removeGame, getPlayLogs, getMyList } from '../../redux'
 import { getLoginInfo } from '../../helpers/auth'
@@ -43,23 +44,25 @@ const GameDetail = ({match}) => {
 
   useEffect(() => {
     // refresh 후에 데이터 날라감
-    if(!myList.length) {
-      dispatch(getMyList())
-      .then(res => {
-        setMyList(res)
-        setIsOwned(res.find((value) => (value.gameId === match.params.id)))
-      })
-    } else setIsOwned(myList.length && myList.find((value) => (value.gameId === match.params.id)))
-
-    if(!playLogs.length) {
-      dispatch(getPlayLogs())
-      .then(res => setPlayLogs(res))
+    if(getLoginInfo()) {
+      if(!myList.length) {
+        dispatch(getMyList())
+        .then(res => {
+          setMyList(res)
+          setIsOwned(res.find((value) => (value.gameId === match.params.id)))
+        })
+      } else setIsOwned(myList.length && myList.find((value) => (value.gameId === match.params.id)))
+  
+      if(!playLogs.length) {
+        dispatch(getPlayLogs())
+        .then(res => setPlayLogs(res))
+      }
     }
 
     dispatch(getGameDetail(match.params.id))
     .then((res) => {
       setThisLogs(playLogs.filter((v) => v.gameId === res.id))
-      
+      res.description = res.description.split("&#10;").join("<br />")
       setGame(res)
       setGameId(match.params.id)
       setLoading(false)
@@ -283,13 +286,13 @@ const GameDetail = ({match}) => {
                     </div>
                   } onTruncate={(flag) => setWasTruncated(flag)}>
                     <div className={`${(isLogForm && !wasTruncated) && 'h-80'}`}>
-                      {game.description_preview}
+                    { Parser(game.description) }
                     </div>
                   </TruncateMarkup>
                 ) 
                 : (
                   <div>
-                    {game.description_preview}
+                    { Parser(game.description) }
                   </div>
                 )
               }
