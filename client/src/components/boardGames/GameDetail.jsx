@@ -63,6 +63,7 @@ const GameDetail = ({match}) => {
     .then((res) => {
       setThisLogs(playLogs.filter((v) => v.gameId === res.id))
       res.description = res.description.split("&#10;").join("<br />")
+      console.log(res)
       setGame(res)
       setGameId(match.params.id)
       setLoading(false)
