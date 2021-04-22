@@ -3,12 +3,13 @@ import { useHistory } from 'react-router-dom'
 import { useDispatch } from 'react-redux'
 import { setGame } from '../../redux'
 import axios from 'axios'
-import {parseBggXmlApi2SearchResponse} from '@code-bucket/board-game-geek'
+import { parseBggXmlApi2ThingResponse, parseBggXmlApi2SearchResponse } from '@code-bucket/board-game-geek'
 
 const SearchGame = () => {
   const history = useHistory()
   const dispatch = useDispatch()
   const [keyword, setKeyword] = useState('')
+  const [keyword2, setKeyword2] = useState('')
   const [games, setGames] = useState([])
   const [isOpen, setIsOpen] = useState(false)
 
@@ -23,11 +24,36 @@ const SearchGame = () => {
       // console.log(response.data[0])
       const result = parseBggXmlApi2SearchResponse(response.data)
       // const result = await axios(`https://api.boardgameatlas.com/api/search?name=${keyword}&limit=5&client_id=${process.env.REACT_APP_BG_ATLAS_ID}`)
+
       if(result.items.length) {
-        setIsOpen(true)
-        setGames(result.items)
+        
+        let ids = []
+        if(result.items.length > 10) {
+          ids = result.items.filter((game, index) => (index < 10)).map((game, index) => game.id).join()
+        } else {
+          ids = result.items.map((game, index) => game.id).join()          
+        }
+        // console.log(ids)
+        const response = await axios.get(`https://api.geekdo.com/xmlapi2/thing?id=${ids}&versions=1`)
+        const bggResponse = parseBggXmlApi2ThingResponse(response.data)
+        if(bggResponse.items.length){
+          // console.log(bggResponse.items)
+          const res = bggResponse.items.filter((game) => (game)).map((game) => {
+            return {
+              id: game.id, 
+              name: game.names[0].value, 
+              yearpublished: game.yearpublished, 
+              thumbnail: game.thumbnail
+            }
+          })
+          // console.log(res)
+          setIsOpen(true)
+          setGames(res)
+        }
       }
     } catch (error) {
+      // setIsOpen(false)
+      // setGames([])
       console.log(error)
     }
   }
@@ -37,7 +63,7 @@ const SearchGame = () => {
       setIsOpen(false)
       return
     }
-    if(keyword.length > 2) searchGameByKeyword(keyword)
+    if(keyword.length > 3) searchGameByKeyword('root')
   },[keyword])
 
   return (
@@ -48,7 +74,15 @@ const SearchGame = () => {
         name="keyword" 
         placeholder="Search ..." 
         value={keyword} 
-        onChange={(e) => setKeyword(e.target.value)}
+        onChange={(e) => {          
+          setKeyword(e.target.value)
+        }}
+        onKeyDown={ e => {
+          if(e.key === 'Enter'){
+            console.log(keyword)
+            setKeyword2(keyword)
+          } 
+        }}
       />
       <button type="submit" className="absolute right-0 top-0 mt-5 mr-4 focus:outline-none">
         <svg className="text-gray-600 h-4 w-4 fill-current " xmlns="http://www.w3.org/2000/svg"
@@ -62,6 +96,7 @@ const SearchGame = () => {
       {isOpen && 
         <div className='absolute left-0 mt-1 w-full py-2 bg-white rounded-lg shadow-xl flex flex-col items-center justify-center'>          
         {games && games.filter((game, index) => (index < 10)).map((game, index) => (
+        // {games && games.filter((game, index) => (index < 10)).map((game, index) => (
           <button 
             key={index} 
             className='btn-search w-full text-gray-700' 
@@ -80,9 +115,9 @@ const SearchGame = () => {
                 <span>({game.yearpublished})</span>
                 {/* <span>({game.year_published})</span> */}
               </div>
-              {/* <div className='h-12 w-12 rounded overflow-hidden'>
-                <img className='w-12 h-12' src={game.images.thumb} alt="Thumbnail"/>
-              </div> */}
+              <div className='h-12 w-12 rounded overflow-hidden'>
+                <img className='w-12 h-12' src={game.thumbnail} alt="Thumbnail"/>
+              </div>
             </div>
           </button>
         ))}
