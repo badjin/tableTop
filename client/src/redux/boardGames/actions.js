@@ -46,6 +46,27 @@ export const getGames = () => {
   }
 }
 
+export const getHot50Games = () => {
+  return (dispatch) => {
+    return new Promise((resolve, reject) => {
+      axios.get(`${process.env.REACT_APP_API_URL}/bgg/hot50`)
+      .then( res => {
+        dispatch({
+          type:GET_BGAMES_SUCCESS,
+          payload:res.data.gameList
+        })
+        resolve(res.data.gameList)
+      })
+      .catch(error => {
+        dispatch({
+          type: GET_BGAMES_FAILURE
+        })
+        reject(error)
+      })
+    })      
+  }
+}
+
 export const getGameDetail = (keyword) => {
   return (dispatch) => {
     return new Promise((resolve, reject) => {
@@ -66,6 +87,27 @@ export const getGameDetail = (keyword) => {
     })      
   }
 }
+
+// export const getGameDetail = (id) => {
+//   return (dispatch) => {
+//     return new Promise((resolve, reject) => {
+//       axios.post(`${process.env.REACT_APP_API_URL}/bgg/game`, {id})
+//       .then( res => {
+//         dispatch({
+//           type:GET_BGAME_DETAIL_SUCCESS,
+//           payload:res.data.gameDetail
+//         })
+//         resolve(res.data.gameDetail)
+//       })
+//       .catch(error => {
+//         dispatch({
+//           type: GET_BGAME_DETAIL_FAILURE
+//         })
+//         reject(error)
+//       })
+//     })      
+//   }
+// }
 
 export const setGame = (game) => {
   return (dispatch) => {
