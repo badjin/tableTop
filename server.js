@@ -25,6 +25,7 @@ app.use(cors())
 app.use('/api', require('./routes/auth.route'))
 app.use('/api', require('./routes/user.route'))
 app.use('/api', require('./routes/game.route'))
+app.use('/api', require('./routes/bgg.route'))
 
 // app.use((req, res) => {
 //   res.status(404).json({
